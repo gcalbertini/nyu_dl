@@ -77,6 +77,34 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
           $5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})=\bm{\hat{y}}$
         \end{tcolorbox}
   \item Write down the gradients calculated from the backward pass. You can only use the following variables: $\bm{x,y,W^{(1)},b^{(1)},W^{(2)},b^{(2)}}, \frac{\partial \ell}{\partial \bm{\hat{y}}}, \frac{\partial \bm{z_2}}{\partial \bm{z_1}},\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}$, where $\bm{z_1,z_2,z_3,\hat{y}}$ are outputs of $Linear_1,f,Linear_2,g$, respectively.
+        \begin{tcolorbox}
+          \begin{flalign*}
+            \frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}}&=\frac{\partial (5\bm{W^{(2)}\max(0,W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{W^{(2)}}}\\
+            &=5\bm{\max(0,W^{(1)}x+b^{(1)})}\\
+            \frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}}&=\frac{\partial (5\bm{W^{(2)}\max(0,W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{b^{(2)}}}\\
+            &=5\\
+            \bm{dW^{(2)}}=\frac{\partial \bm{\ell}}{\partial \bm{W^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}} \\
+            &=5\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{\max(0,W^{(1)}x+b^{(1)})}\\
+            \bm{db^{(2)}}=\frac{\partial \bm{\ell}}{\partial \bm{b^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}} \\
+            &=5\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\\
+          \end{flalign*}
+        \end{tcolorbox}
+        \begin{tcolorbox}
+          \begin{flalign*}
+            \frac{\partial \bm{z_3}}{\partial \bm{z_2}}&=\frac{\partial (\bm{W^{(2)}}5\max(0,\bm{W^{(1)}x+b^{(1)}}))}{\partial 5 \max(0, \bm{W^{(1)}x+b^{(1)}})}=\bm{W^{(2)}}\\
+            \frac{\partial \bm{z_1}}{\partial \bm{W^{(1)}}}&= \frac{\partial (\bm{W^{(1)}x+b^{(1)}})}{\bm{W^{(1)}}}=x\\
+            \frac{\partial \bm{z_1}}{\partial \bm{b^{(1)}}}&= \frac{\partial (\bm{W^{(1)}x+b^{(1)}})}{\bm{b^{(1)}}}=1\\
+            \bm{dW^{(1)}}=\frac{\partial \bm{\ell}}{\partial \bm{W^{(1)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{z_2}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\frac{\partial \bm{z_1}}{\partial \bm{W^{(1)}}} \\
+            &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{W^{(2)}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\bm{x}\\
+            \bm{db^{(1)}}=\frac{\partial \bm{\ell}}{\partial \bm{b^{(1)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{z_2}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\frac{\partial \bm{z_1}}{\partial \bm{b^{(1)}}} \\
+            &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{W^{(2)}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\\
+          \end{flalign*}
+        \end{tcolorbox}
+  \item Show the elements of $\frac{\partial \bm{z_2}}{\partial \bm{z_1}}, \frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}},\frac{\partial \ell}{\partial \bm{\hat{y}}}$. Be careful about dimensionality.
+        \begin{tcolorbox}
+          k
+        \end{tcolorbox}
+
 \end{enumerate}
 
 \begin{tcolorbox}
