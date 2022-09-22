@@ -82,11 +82,11 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
             \frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}}&=\frac{\partial (5\bm{W^{(2)}\max(0,W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{W^{(2)}}}\\
             &=5\bm{\max(0,W^{(1)}x+b^{(1)})}\\
             \frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}}&=\frac{\partial (5\bm{W^{(2)}\max(0,W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{b^{(2)}}}\\
-            &=5\\
-            \bm{dW^{(2)}}=\frac{\partial \bm{\ell}}{\partial \bm{W^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}} \\
+            &=1\\
+            \frac{\partial \bm{\ell}}{\partial \bm{W^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}} \\
             &=5\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{\max(0,W^{(1)}x+b^{(1)})}\\
-            \bm{db^{(2)}}=\frac{\partial \bm{\ell}}{\partial \bm{b^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}} \\
-            &=5\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\\
+            \frac{\partial \bm{\ell}}{\partial \bm{b^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}} \\
+            &=\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\\
           \end{flalign*}
         \end{tcolorbox}
         \begin{tcolorbox}
@@ -94,36 +94,24 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
             \frac{\partial \bm{z_3}}{\partial \bm{z_2}}&=\frac{\partial (\bm{W^{(2)}}5\max(0,\bm{W^{(1)}x+b^{(1)}}))}{\partial 5 \max(0, \bm{W^{(1)}x+b^{(1)}})}=\bm{W^{(2)}}\\
             \frac{\partial \bm{z_1}}{\partial \bm{W^{(1)}}}&= \frac{\partial (\bm{W^{(1)}x+b^{(1)}})}{\bm{W^{(1)}}}=x\\
             \frac{\partial \bm{z_1}}{\partial \bm{b^{(1)}}}&= \frac{\partial (\bm{W^{(1)}x+b^{(1)}})}{\bm{b^{(1)}}}=1\\
-            \bm{dW^{(1)}}=\frac{\partial \bm{\ell}}{\partial \bm{W^{(1)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{z_2}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\frac{\partial \bm{z_1}}{\partial \bm{W^{(1)}}} \\
+           \frac{\partial \bm{\ell}}{\partial \bm{W^{(1)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{z_2}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\frac{\partial \bm{z_1}}{\partial \bm{W^{(1)}}} \\
             &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{W^{(2)}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\bm{x}\\
-            \bm{db^{(1)}}=\frac{\partial \bm{\ell}}{\partial \bm{b^{(1)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{z_2}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\frac{\partial \bm{z_1}}{\partial \bm{b^{(1)}}} \\
+            \frac{\partial \bm{\ell}}{\partial \bm{b^{(1)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{z_2}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\frac{\partial \bm{z_1}}{\partial \bm{b^{(1)}}} \\
             &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{W^{(2)}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\\
           \end{flalign*}
         \end{tcolorbox}
   \item Show the elements of $\frac{\partial \bm{z_2}}{\partial \bm{z_1}}, \frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}},\frac{\partial \ell}{\partial \bm{\hat{y}}}$. Be careful about dimensionality.
         \begin{tcolorbox}
-          k
+          \begin{flalign*}
+            \frac{\partial \bm{z_2}}{\partial \bm{z_1}} &= \frac{\partial  (5\max(0,\bm{W^{(1)}x+b^{(1)}}))}{\partial (\bm{W^{(1)}x+b^{(1)}})}\\
+            &= \begin{cases} 0, & z_1 < 0 \\ 5, & z_1 > 0 \\ \text{undefined (or assigned a value in code)}, & z_1 = 0 \end{cases}\\
+            \text{Note: } \bm{z_1} &= \bm{W^{(1)}x+b^{(1)}}\\
+            \frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}} &= 1 \text{  (Due to identity transformation)}\\ 
+            \frac{\partial \ell}{\partial \bm{\hat{y}}} = \frac{\partial (||\bm{\hat{y}-y||^2})}{\partial \bm{\hat{y}}}=2\bm{{(\hat{y}-y)}^T}
+          \end{flalign*}
         \end{tcolorbox}
 
 \end{enumerate}
-
-\begin{tcolorbox}
-  For the negative log-liklihood:
-  \begin{flalign*}
-    \frac{\partial L(c\hat{w})}{\partial c} = \frac{\partial (\log
-      (1+\exp(-cy_i\hat{w}^Tx_i)))}{\partial c} =
-    \frac{-y_i\hat{w}^Tx}{1+\exp(cy_i\hat{w}^Tx_i)}
-  \end{flalign*}
-  Both $y_i\hat{w}^Tx_i$ and $1+\exp(-cy_i\hat{w}^Tx_i)$ are non-negative
-  terms: if all points are classified correctly, then this means that
-  $-y_iw^Tx_i$ is negative which in turn implies the partial derivative is less
-  than 0,
-  decreasing without bound as we increase $c$ (with a non-negative $c$) -- we
-  never get an optimizer for this case as there is always another $c > 1$ (and
-  thus $c\hat{w}$) that forcing the (non-negative) liklihood to increase
-  without
-  bound.
-\end{tcolorbox}
 
 %If you want centered math on its own line, you can use a slash and square
 %bracket.\\
@@ -136,14 +124,14 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
 %be.
 
 \clearpage %Gives us a page break before the next section. Optional.
-\subsection*{Problem 2}
-Given...
-\begin{proof}
-  Let $\epsilon>0$.
-  If you have a shorter statement that you still want centered, use two \$\$ on
-  either side.
-  $$\exists \textrm{ some } \delta>0 \mid ...$$
-\end{proof}
+\subsection*{Problem 2: Classification Task}
+We would like to perform multi-class classification task, so we set $f = tanh$ and $g = \sigma$, the logistic sigmoid function, $\sigma(z)=\frac{1}{1+\exp(-z)}$.
+\begin{enumerate}
+  \item If you want to train this network, what do you need to change in the equations of (b), (c) and (d), assuming we are using the same MSE loss function.
+    \begin{tcolorbox}
+      ya
+    \end{tcolorbox}
+\end{enumerate}
 
 \subsection*{Problem 3}
 %
