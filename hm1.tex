@@ -41,22 +41,7 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
         of data.
         \begin{tcolorbox}
           \begin{enumerate}
-            \item First, we initialize the parameters to random values (and can
-                  optionally save the original parameters in another variable),
-                  and tell PyTorch
-                  that we want to track their gradients.
-            \item Second, we calculate the predicted values and visualise the
-                  actual and predicted values.
-            \item Third,we calculate the average loss of the model using
-                  backpropagation, seeking to reduce MSE of our existing model. To do that, we
-                  compute the current gradients to approximate how to change update the existing
-                  parameters.
-            \item Fourth, we update the paramaters via the chosen learning
-                  rate.
-            \item Finally, iterate until early stopping or another criterion
-                  (i.e certain number of epochs, target MSE threshold, etc.) is applied. IIt is
-                  best to monitor the training and validation losses and chosen metrics when
-                  deciding to stop.
+            \item see vid 
           \end{enumerate}
         \end{tcolorbox}
   \item For a single data point $(x,y)$, write down all inputs and outputs for
@@ -70,11 +55,14 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
             $=5\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})$\\
           |$Linear_2$|\\ Input: $f(Linear_1(\bm{x}))$\\
           Output ($z_3$): $Linear_2(f(Linear_1(\bm{x})))=\bm{W}^{(2)}\bm{f(Linear_1(\bm{x}))}+\bm{b}^{(2)}$\\
-          $=5\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)}$\\
+          $=5\bm{W}^{(2)}((\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)}$\\
           |g|\\Input: $Linear_2(f(Linear_1(\bm{x})))$\\
           Output: $g(Linear_2(f(Linear_1(\bm{x})))) = \\
           5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})\bm{I}$=\\
-          $5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})=\bm{\hat{y}}$
+          $5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})=\bm{\hat{y}}$\\
+          |Loss|\\
+          Input: $\bm{\hat{y}}$\\
+          Output: $(5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})-\bm{y})^2$\\
         \end{tcolorbox}
   \item Write down the gradients calculated from the backward pass. You can only use the following variables: $\bm{x,y,W^{(1)},b^{(1)},W^{(2)},b^{(2)}}, \frac{\partial \ell}{\partial \bm{\hat{y}}}, \frac{\partial \bm{z_2}}{\partial \bm{z_1}},\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}$, where $\bm{z_1,z_2,z_3,\hat{y}}$ are outputs of $Linear_1,f,Linear_2,g$, respectively.
         \begin{tcolorbox}
@@ -102,12 +90,13 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
         \end{tcolorbox}
   \item Show the elements of $\frac{\partial \bm{z_2}}{\partial \bm{z_1}}, \frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}},\frac{\partial \ell}{\partial \bm{\hat{y}}}$. Be careful about dimensionality.
         \begin{tcolorbox}
+          Note: $ i \in \left\lbrace1,\ldots,m\right\rbrace$ used throughout.
           \begin{flalign*}
             \frac{\partial \bm{z_2}}{\partial \bm{z_1}} &= \frac{\partial  (5\max(0,\bm{W^{(1)}x+b^{(1)}}))}{\partial (\bm{W^{(1)}x+b^{(1)}})}\\
-            &= \begin{cases} 0, & z_1 < 0 \\ 5, & z_1 > 0 \\ \text{undefined (or assigned a value in code)}, & z_1 = 0 \end{cases}\\
-            \text{Note: } \bm{z_1} &= \bm{W^{(1)}x+b^{(1)}}\\
-            \frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}} &= 1 \text{  (Due to identity transformation)}\\ 
-            \frac{\partial \ell}{\partial \bm{\hat{y}}} = \frac{\partial (||\bm{\hat{y}-y||^2})}{\partial \bm{\hat{y}}}=2\bm{{(\hat{y}-y)}^T}
+            \left( \frac{\partial \bm{z_2}}{\partial \bm{z_1}}  \right)_{ii} &= \begin{cases} 0, & z_{1i} < 0 \\ 5, & z_{1i} > 0 \\ \text{undefined (or assigned a value 0 in code)}, & z_{1i} = 0 \end{cases}\\
+            \text{Note: } \bm{z_1} &= \bm{W^{(1)}x+b^{(1)}}\text{ and the above is a diagonal matrix} \\
+            \left(\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}    \right)_{ii} &= 1 \text{ (and 0 elsewhere, off of diagonal; an identity matrix)}\\ 
+            \frac{\partial \ell}{\partial \bm{\hat{y}}} &= \frac{\partial (||\bm{\hat{y}-y||^2})}{\partial \bm{\hat{y}}}=2\bm{{(\hat{y}-y)}^T} \text{ (A vector)}\\
           \end{flalign*}
         \end{tcolorbox}
 
@@ -127,9 +116,39 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
 \subsection*{Problem 2: Classification Task}
 We would like to perform multi-class classification task, so we set $f = tanh$ and $g = \sigma$, the logistic sigmoid function, $\sigma(z)=\frac{1}{1+\exp(-z)}$.
 \begin{enumerate}
-  \item If you want to train this network, what do you need to change in the equations of (b), (c) and (d), assuming we are using the same MSE loss function.
+  \item If you want to train this network, what do you need to change in the equations of (1.2), (1.3) and (1.4), assuming we are using the same MSE loss function.
     \begin{tcolorbox}
-      ya
+      |$f$|\\ Input: $Linear_1(\bm{x})=\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}$\\
+          Output ($z_2$): $f(Linear_1(\bm{x}))=\tanh(Linear_1(\bm{x}))\\
+            =\tanh(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})$\\
+            $=\frac{\exp(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})-\exp(-\bm{W}^{(1)}\bm{x}-\bm{b}^{(1)})}{\exp(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})+\exp(-\bm{W}^{(1)}\bm{x}-\bm{b}^{(1)})}$\\
+          |$Linear_2$|\\ Input: $f(Linear_1(\bm{x}))=\tanh(Linear_1(x))$\\
+          Output ($z_3$): $Linear_2(f(Linear_1(\bm{x})))=\bm{W}^{(2)}\bm{f(Linear_1(\bm{x}))}+\bm{b}^{(2)}$\\
+          $=\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}$\\
+          |g|\\Input: $Linear_2(f(Linear_1(\bm{x})))$\\
+          Output: $g(Linear_2(f(Linear_1(\bm{x})))) = \\
+          \frac{1}{1+\exp(-f(Linear_1(\bm{x})))}=\frac{1}{1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))}=\bm{\hat{y}}$
+    \end{tcolorbox}
+    \begin{tcolorbox}
+      \begin{flalign*}
+        \frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}}&=\frac{\partial (\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{W^{(2)}}}\\
+        &=\tanh(\bm{W^{(1)}x+b^{(1)}})\\
+        \frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}}&=\frac{\partial (\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{b^{(2)}}}\\
+        &=1\\
+        \frac{\partial \bm{\ell}}{\partial \bm{W^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}} \\
+        &=\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\tanh(\bm{W^{(1)}x+b^{(1)}})\\
+        \frac{\partial \bm{\ell}}{\partial \bm{b^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}} \\
+        &=\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\\
+      \end{flalign*}
+    \end{tcolorbox}
+    \begin{tcolorbox}
+      \begin{flalign*}
+        \frac{\partial \bm{z_3}}{\partial \bm{z_2}}&=\frac{\partial (\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \tanh(\bm{W^{(1)}x+b^{(1)}})}=\bm{W^{(2)}}\\
+        \frac{\partial \bm{z_2}}{\partial \bm{z_1}} &= \frac{\partial  (\tanh(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))}{\partial (\bm{W^{(1)}x+b^{(1)}})} = \frac{2}{\cosh(2(\bm{W^{(1)}x+b^{(1)}}))+1}\\
+         &= 1-{\tanh(\bm{W^{(1)}x+b^{(1)}})}^2\\
+         \frac{\partial \bm{\hat{y}}}{\partial z_3} &= \frac{\partial ({1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))})^{-1}}{\partial (\tanh(W^{(1)}x+b^{(1)})+b^{(2)})} \\
+         &=\frac{{\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))}}{(1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})))^2}\\ 
+      \end{flalign*}
     \end{tcolorbox}
 \end{enumerate}
 
