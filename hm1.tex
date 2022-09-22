@@ -23,7 +23,7 @@ Let $Linear_1 \rightarrow f \rightarrow  Linear_2 \rightarrow g $ be a be a
 two-layer neural net architecture whereby $Linear_i(x) =
   \bm{W}^{(i)}\bm{x}+\bm{b}^{(i)}$ is the $i^{th}$ affine transformation and
 $f,
-  g$ are element-wise nonlinear activation functions. When an input $\bm{x}\in
+  g$ are element-wise nonlinear activation functions (else must use transposes and/or Hadamard products). When an input $\bm{x}\in
   \mathbb{R}^n$ is fed into the network, $\bm{\hat{y}} \in \mathbb{R}^K$ is
 obtained as output.
 %Basically, you type whatever text you want and use the $ sign to enter "math mode".
@@ -42,19 +42,41 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
         \begin{tcolorbox}
           \begin{enumerate}
             \item First, we initialize the parameters to random values (and can
-                  optionally save the original parameters in another variable), and tell PyTorch
+                  optionally save the original parameters in another variable),
+                  and tell PyTorch
                   that we want to track their gradients.
-            \item Second, we calculate the predicted values and visualise the actual and predicted values.
-            \item Third,we calculate the average loss of the model using backpropagation, seeking to reduce MSE of our existing model. To do that, we compute the current gradients to approximate how to change update the existing parameters.
-            \item Fourth, we update the paramaters via the chosen learning rate.
-            \item Finally, iterate until early stopping or another criterion (i.e certain number of epochs, target MSE threshold, etc.) is applied. IIt is best to monitor the training and validation losses and chosen metrics when deciding to stop.
+            \item Second, we calculate the predicted values and visualise the
+                  actual and predicted values.
+            \item Third,we calculate the average loss of the model using
+                  backpropagation, seeking to reduce MSE of our existing model. To do that, we
+                  compute the current gradients to approximate how to change update the existing
+                  parameters.
+            \item Fourth, we update the paramaters via the chosen learning
+                  rate.
+            \item Finally, iterate until early stopping or another criterion
+                  (i.e certain number of epochs, target MSE threshold, etc.) is applied. IIt is
+                  best to monitor the training and validation losses and chosen metrics when
+                  deciding to stop.
           \end{enumerate}
         \end{tcolorbox}
-  \item For a single data point $(x,y)$, write down all inputs and outputs for forward pass of each layer. You can only use variables and mechanics specified prior in your answer.
-  \item \begin{tcolorbox}
-    $Linear_1$
-  \end{tcolorbox}
-  \item Six
+  \item For a single data point $(x,y)$, write down all inputs and outputs for
+        forward pass of each layer. You can only use variables and mechanics specified
+        prior in your answer.
+        \begin{tcolorbox}
+          |$Linear_1$|\\ Input: $\bm{x}$\\Output ($z_1$): $\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}$\\
+          |$f$|\\ Input: $Linear_1(\bm{x})=\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}$\\
+          Output ($z_2$): $f(Linear_1(\bm{x}))=5ReLU(Linear_1(\bm{x}))\\
+            =5ReLU(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})$\\
+            $=5\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})$\\
+          |$Linear_2$|\\ Input: $f(Linear_1(\bm{x}))$\\
+          Output ($z_3$): $Linear_2(f(Linear_1(\bm{x})))=\bm{W}^{(2)}\bm{f(Linear_1(\bm{x}))}+\bm{b}^{(2)}$\\
+          $=5\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)}$\\
+          |g|\\Input: $Linear_2(f(Linear_1(\bm{x})))$\\
+          Output: $g(Linear_2(f(Linear_1(\bm{x})))) = \\
+          5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})\bm{I}$=\\
+          $5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})=\bm{\hat{y}}$
+        \end{tcolorbox}
+  \item Write down the gradients calculated from the backward pass. You can only use the following variables: $\bm{x,y,W^{(1)},b^{(1)},W^{(2)},b^{(2)}}, \frac{\partial \ell}{\partial \bm{\hat{y}}}, \frac{\partial \bm{z_2}}{\partial \bm{z_1}},\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}$, where $\bm{z_1,z_2,z_3,\hat{y}}$ are outputs of $Linear_1,f,Linear_2,g$, respectively.
 \end{enumerate}
 
 \begin{tcolorbox}
