@@ -1,0 +1,113 @@
+%This is my super simple Real Analysis Homework template
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,bm}
+\usepackage{minted}
+\usepackage[]{tcolorbox}
+\usepackage[]{amsthm} %lets us use \begin{proof}
+\usepackage[]{amssymb} %gives us the character \varnothing
+
+\title{Homework 1}
+\author{Guilherme Albertini}
+\date\today
+%This information doesn't actually show up on your document unless you use the maketitle command below
+
+\begin{document}
+\maketitle %This command prints the title based on information entered above
+
+%Section and subsection automatically number unless you put the asterisk next to them.
+\section*{Theory}
+Let $Linear_1 \rightarrow f \rightarrow  Linear_2 \rightarrow g $ be a be a
+two-layer neural net architecture whereby $Linear_i(x) =
+  \bm{W}^{(i)}\bm{x}+\bm{b}^{(i)}$ is the $i^{th}$ affine transformation and
+$f,
+  g$ are element-wise nonlinear activation functions. When an input $\bm{x}\in
+  \mathbb{R}^n$ is fed into the network, $\bm{\hat{y}} \in \mathbb{R}^K$ is
+obtained as output.
+%Basically, you type whatever text you want and use the $ sign to enter "math mode".
+%For fancy calligraphy letters, use \mathcal{}
+%Special characters are their own commands
+
+\subsection*{Problem 1: Regression Task}
+We would like to perform regression task. We choose
+$f(\cdot)=5(\cdot)^{+}=5ReLU(\cdot)$ and $g$ to be the identity function. To
+train, we choose MSE loss function,
+$\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
+\begin{enumerate}
+  \item Name and mathematically describe the 5 programming steps you
+        would take to train this model with PyTorch using SGD on a single batch
+        of data.
+        \begin{tcolorbox}
+          \begin{enumerate}
+            \item First, we initialize the parameters to random values (and can
+                  optionally save the original parameters in another variable), and tell PyTorch
+                  that we want to track their gradients.
+            \item Second, we calculate the predicted values and visualise the actual and predicted values.
+            \item Third,we calculate the average loss of the model using backpropagation, seeking to reduce MSE of our existing model. To do that, we compute the current gradients to approximate how to change update the existing parameters.
+            \item Fourth, we update the paramaters via the chosen learning rate.
+            \item Finally, iterate until early stopping or another criterion (i.e certain number of epochs, target MSE threshold, etc.) is applied. IIt is best to monitor the training and validation losses and chosen metrics when deciding to stop.
+          \end{enumerate}
+        \end{tcolorbox}
+  \item For a single data point $(x,y)$, write down all inputs and outputs for forward pass of each layer. You can only use variables and mechanics specified prior in your answer.
+  \item \begin{tcolorbox}
+    $Linear_1$
+  \end{tcolorbox}
+  \item Six
+\end{enumerate}
+
+\begin{tcolorbox}
+  For the negative log-liklihood:
+  \begin{flalign*}
+    \frac{\partial L(c\hat{w})}{\partial c} = \frac{\partial (\log
+      (1+\exp(-cy_i\hat{w}^Tx_i)))}{\partial c} =
+    \frac{-y_i\hat{w}^Tx}{1+\exp(cy_i\hat{w}^Tx_i)}
+  \end{flalign*}
+  Both $y_i\hat{w}^Tx_i$ and $1+\exp(-cy_i\hat{w}^Tx_i)$ are non-negative
+  terms: if all points are classified correctly, then this means that
+  $-y_iw^Tx_i$ is negative which in turn implies the partial derivative is less
+  than 0,
+  decreasing without bound as we increase $c$ (with a non-negative $c$) -- we
+  never get an optimizer for this case as there is always another $c > 1$ (and
+  thus $c\hat{w}$) that forcing the (non-negative) liklihood to increase
+  without
+  bound.
+\end{tcolorbox}
+
+%If you want centered math on its own line, you can use a slash and square
+%bracket.\\
+%\[
+%  \left \{
+%  \sum\limits_{k=1}^\infty l(I_k):A\subseteq \bigcup_{k=1}^\infty \{I_k\}
+%  \right \}
+%\]
+%The left and right commands make the brackets get as big as we need them to
+%be.
+
+\clearpage %Gives us a page break before the next section. Optional.
+\subsection*{Problem 2}
+Given...
+\begin{proof}
+  Let $\epsilon>0$.
+  If you have a shorter statement that you still want centered, use two \$\$ on
+  either side.
+  $$\exists \textrm{ some } \delta>0 \mid ...$$
+\end{proof}
+
+\subsection*{Problem 3}
+%
+\begin{proof}
+  %
+\end{proof}
+
+\section*{Section 2.2}
+%
+\subsection*{Problem 6}
+Blah
+\subsection*{Problem 7}
+Blah
+\subsection*{Problem 10}
+Blah
+
+\end{document}
