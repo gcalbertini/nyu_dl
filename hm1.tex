@@ -181,11 +181,30 @@ We would like to perform multi-class classification task, so we set $f = tanh$ a
   \item Draw the computational graph defined by this function, with inputs $x, y, z \in \mathbb{R}$ and output $w \in \mathbb{R}$. You make use symbols $x, y, z,w$, and operators $+,\star$ in your solution. Be sure to use the correct shape for symbols and
   operators as shown in class.
   \begin{enumerate}
-    \item $a \star y + z  $
+    \item $a = x \star y + z  $
     \item $b = (x+x) \star a$
     \item $w = a \star b$
   \end{enumerate}
-  %\includegraphics[]{"diagram.jpg"}
+  \includegraphics[width=15cm]{"diagram.jpg"}
+  \item Draw the graph of the following:
+    \begin{enumerate}
+      \item ReLU()
+      \begin{tcolorbox}
+        \includegraphics[width=9.5cm]{relu.jpg}
+      \end{tcolorbox}
+      \item LeakyReLU(neg slope is 0.01)
+      \begin{tcolorbox}
+        \includegraphics[width=9.5cm]{leaky_relu.jpg}
+      \end{tcolorbox}
+      \item Softplus(beta is 1)
+      \begin{tcolorbox}
+        \includegraphics[width=9.5cm]{softplus.jpg}
+      \end{tcolorbox}
+      \item GELU
+      \begin{tcolorbox}
+        \includegraphics[width=9.5cm]{gelu.jpg}
+      \end{tcolorbox}
+    \end{enumerate} 
 \end{enumerate}
 
 \section*{Section 2.2}
