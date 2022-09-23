@@ -62,17 +62,17 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
           $5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})=\bm{\hat{y}}$\\
           |Loss|\\
           Input: $\bm{\hat{y}}$\\
-          Output: $(5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})-\bm{y})^2$\\
+          Output: $||(5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})-\bm{y})||^2$\\
         \end{tcolorbox}
   \item Write down the gradients calculated from the backward pass. You can only use the following variables: $\bm{x,y,W^{(1)},b^{(1)},W^{(2)},b^{(2)}}, \frac{\partial \ell}{\partial \bm{\hat{y}}}, \frac{\partial \bm{z_2}}{\partial \bm{z_1}},\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}$, where $\bm{z_1,z_2,z_3,\hat{y}}$ are outputs of $Linear_1,f,Linear_2,g$, respectively.
         \begin{tcolorbox}
           \begin{flalign*}
-            \frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}}&=\frac{\partial (5\bm{W^{(2)}\max(0,W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{W^{(2)}}}\\
-            &=5\bm{\max(0,W^{(1)}x+b^{(1)})}\\
-            \frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}}&=\frac{\partial (5\bm{W^{(2)}\max(0,W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{b^{(2)}}}\\
-            &=1\\
+            \frac{\partial \bm{z_{3i}}}{\partial \bm{W^{(2)}}}&=\frac{\partial (5\bm{W^{(2)}\max(0,W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{W^{(2)}}}\\
+            &=5\bm{\max(0,W^{(1)}x+b^{(1)})}^T \text{, else }0^T\\ 
+            \frac{\partial \bm{z_{3}}}{\partial \bm{b^{(2)}}}&=\frac{\partial (5\bm{W^{(2)}\max(0,W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{b^{(2)}}}\\
+            &=diag(1)\\
             \frac{\partial \bm{\ell}}{\partial \bm{W^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}} \\
-            &=5\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{\max(0,W^{(1)}x+b^{(1)})}\\
+            &=5\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{\max(0,W^{(1)}x+b^{(1)})}^T\\
             \frac{\partial \bm{\ell}}{\partial \bm{b^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}} \\
             &=\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\\
           \end{flalign*}
@@ -80,10 +80,10 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
         \begin{tcolorbox}
           \begin{flalign*}
             \frac{\partial \bm{z_3}}{\partial \bm{z_2}}&=\frac{\partial (\bm{W^{(2)}}5\max(0,\bm{W^{(1)}x+b^{(1)}}))}{\partial 5 \max(0, \bm{W^{(1)}x+b^{(1)}})}=\bm{W^{(2)}}\\
-            \frac{\partial \bm{z_1}}{\partial \bm{W^{(1)}}}&= \frac{\partial (\bm{W^{(1)}x+b^{(1)}})}{\bm{W^{(1)}}}=x\\
-            \frac{\partial \bm{z_1}}{\partial \bm{b^{(1)}}}&= \frac{\partial (\bm{W^{(1)}x+b^{(1)}})}{\bm{b^{(1)}}}=1\\
+            \frac{\partial \bm{z_{1i}}}{\partial \bm{W^{(1)}}}&= \frac{\partial (\bm{W^{(1)}x+b^{(1)}})}{\bm{W^{(1)}}}=x^T \text{, else }0^T\\
+            \frac{\partial \bm{z_1}}{\partial \bm{b^{(1)}}}&= \frac{\partial (\bm{W^{(1)}x+b^{(1)}})}{\bm{b^{(1)}}}=diag(1)\\
            \frac{\partial \bm{\ell}}{\partial \bm{W^{(1)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{z_2}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\frac{\partial \bm{z_1}}{\partial \bm{W^{(1)}}} \\
-            &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{W^{(2)}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\bm{x}\\
+            &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{W^{(2)}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\bm{x^T}\\
             \frac{\partial \bm{\ell}}{\partial \bm{b^{(1)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{z_2}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\frac{\partial \bm{z_1}}{\partial \bm{b^{(1)}}} \\
             &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\bm{W^{(2)}}\frac{\partial \bm{z_2}}{\partial \bm{z_1}}\\
           \end{flalign*}
@@ -127,16 +127,19 @@ We would like to perform multi-class classification task, so we set $f = tanh$ a
           $=\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}$\\
           |g|\\Input: $Linear_2(f(Linear_1(\bm{x})))$\\
           Output: $g(Linear_2(f(Linear_1(\bm{x})))) = \\
-          \frac{1}{1+\exp(-f(Linear_1(\bm{x})))}=\frac{1}{1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))}=\bm{\hat{y}}$
+          \frac{1}{1+\exp(-z_3)}=\frac{1}{1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))}=\bm{\hat{y}}$\\
+          |Loss|\\
+          Input: $\bm{\hat{y}}$\\
+          Output: $||(\frac{1}{1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))}-\bm{y})||^2$\\
     \end{tcolorbox}
     \begin{tcolorbox}
       \begin{flalign*}
-        \frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}}&=\frac{\partial (\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{W^{(2)}}}\\
-        &=\tanh(\bm{W^{(1)}x+b^{(1)}})\\
+        \frac{\partial \bm{z_{3i}}}{\partial \bm{W^{(2)}}}&=\frac{\partial (\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{W^{(2)}}}\\
+        &=\tanh(\bm{W^{(1)}x+b^{(1)}})^T \text{ , else }0^T\\
         \frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}}&=\frac{\partial (\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \bm{b^{(2)}}}\\
-        &=1\\
+        &=diag(1)\\
         \frac{\partial \bm{\ell}}{\partial \bm{W^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{W^{(2)}}} \\
-        &=\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\tanh(\bm{W^{(1)}x+b^{(1)}})\\
+        &=\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\tanh(\bm{W^{(1)}x+b^{(1)}})^T\\
         \frac{\partial \bm{\ell}}{\partial \bm{b^{(2)}}} &= \frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}} \\
         &=\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}\\
       \end{flalign*}
@@ -144,19 +147,38 @@ We would like to perform multi-class classification task, so we set $f = tanh$ a
     \begin{tcolorbox}
       \begin{flalign*}
         \frac{\partial \bm{z_3}}{\partial \bm{z_2}}&=\frac{\partial (\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})}{\partial \tanh(\bm{W^{(1)}x+b^{(1)}})}=\bm{W^{(2)}}\\
-        \frac{\partial \bm{z_2}}{\partial \bm{z_1}} &= \frac{\partial  (\tanh(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))}{\partial (\bm{W^{(1)}x+b^{(1)}})} = \frac{2}{\cosh(2(\bm{W^{(1)}x+b^{(1)}}))+1}\\
-         &= 1-{\tanh(\bm{W^{(1)}x+b^{(1)}})}^2\\
-         \frac{\partial \bm{\hat{y}}}{\partial z_3} &= \frac{\partial ({1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))})^{-1}}{\partial (\tanh(W^{(1)}x+b^{(1)})+b^{(2)})} \\
-         &=\frac{{\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))}}{(1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}})))^2}\\ 
+        \left(\frac{\partial \bm{z_2}}{\partial \bm{z_1}} \right)_{ii} &= \frac{\partial  (\tanh(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))}{\partial (\bm{W^{(1)}x+b^{(1)}})} = \bm{1}-{\tanh(\bm{W^{(1)}x+b^{(1)}})}^2\\
+         \left( \frac{\partial \bm{\hat{y}}}{\partial z_3}   \right)_{ii} &= \frac{\partial ({1+\exp(-(\bm{W^{(2)}\tanh(W^{(1)}x+b^{(1)})+b^{(2)}}))})^{-1}}{\partial (\tanh(W^{(1)}x+b^{(1)})+b^{(2)})} \\
+         &= \sigma(z_3)(1-\sigma(z_3))_i,\\ 
+         &\text{ Note the two partials above represent diagonal matrices}  \\
+         \frac{\partial \ell}{\partial \bm{\hat{y}}} &= \frac{\partial (||\bm{\hat{y}-y||^2})}{\partial \bm{\hat{y}}}=2\bm{{(\hat{y}-y)}^T} \text{ (A vector)}
       \end{flalign*}
     \end{tcolorbox}
+  \item Now you think you can do a better job by using a Binary Cross Entropy (BCE) loss function $\ell_{BCE}(\bm{\hat{y},y})=\frac{1}{K}\sum_{i=1}^{K}-[y_i\log(\hat{y_i})+(1-y_i)\log(1-\hat{\hat{y_i}})]$. What needs to change from the previous?
+      \begin{tcolorbox}
+          |Loss|\\
+          Input: $\bm{\hat{y}}$\\
+          Output: $\ell_{BCE}(\bm{\hat{y},y})=\frac{1}{K}\sum_{i=1}^{K}-[y_i\log(\hat{y_i})+(1-y_i)\log(1-\hat{\hat{y_i}})],$\\
+          $\hat{y_i}=\frac{1}{1+\exp(-z_{3i})}$\\
+          $\frac{\partial \ell}{\partial \hat{y}}=(\frac{-y_i}{\hat{y_i}}+\frac{1-y_i}{1-\hat{y_i}})^T$
+      \end{tcolorbox}
+  \item Things are getting better. You realize that not all intermediate hidden activations need to be binary (or soft version of binary). You decide to use $f(\cdot)=(\cdot)^{+}$ but keep g as $\sigma$. Explain why this choice of f can be beneficial for training a (deeper) network.
+      \begin{tcolorbox}
+        Sigmoid function is more computationally intensive to compute compared to ReLU due to exponential operation; the latter produces sparsity in matrices which encourages numerical optimization techniques taking advantage of this time and space complexity reduction. 
+      \end{tcolorbox}
+      \begin{tcolorbox}
+        ReLU also avoids the vanishing gradient problem, whereby the number of parameters receive very small updates such that the nodes deviate greatly from their optimal value. As the gradient is constant for ReLU compared to the sigmoid gradient always being smaller than 1, successive operations will start to prohibit learning.
+      \end{tcolorbox}
 \end{enumerate}
 
-\subsection*{Problem 3}
+\subsection*{Problem 3: Conceptual Questions}
 %
-\begin{proof}
-  %
-\end{proof}
+\begin{enumerate}
+  \item Why is softmax actually softargmax?
+    \begin{tcolorbox}
+    
+  \end{tcolorbox}
+\end{enumerate}
 
 \section*{Section 2.2}
 %
