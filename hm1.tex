@@ -41,7 +41,11 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
         of data.
         \begin{tcolorbox}
           \begin{enumerate}
-            \item see vid 
+            \item First compute a prediction from the model (the forward pass); $\tilde{y}=model(x)$
+            \item Second compute the loss through computation of the energy
+            \item Zero the gradient parameters; $optimiser.zero\_grad()$
+            \item Compute and accumulate gradient parameters; $L.backward()$
+            \item Finally step in the opposite direction of the gradient; $optimiser.step()$
           \end{enumerate}
         \end{tcolorbox}
   \item For a single data point $(x,y)$, write down all inputs and outputs for
@@ -205,6 +209,18 @@ We would like to perform multi-class classification task, so we set $f = tanh$ a
         \includegraphics[width=9.5cm]{gelu.jpg}
       \end{tcolorbox}
     \end{enumerate} 
+    \item What are 4 different types of linear transformations? What is the
+    role of linear transformation and non linear transformation in a neural
+    network?
+    \begin{tcolorbox}
+      Reflection, rotation, projection, and dilation are the main types of linear transformations. In neural networks, each output unit produces the linear combination of the inputs and the connection weights. Once we allow translation, these essentially become affine transformations. To introduce nonlinearity to the model, activation functions ingest these transformations through a nonlinear function and treat that as the unit output.
+    \end{tcolorbox}
+    \item Given a neural network F parameterized by parameters $\theta$, denoted $F_\theta$, dataset $D = x_1, x_2,\ldots, x_N $, and labels $Y = y_1, y_2,\ldots, y_N$, write down the mathematical definition of training a neural network with the MSE loss function $\ell_{MSE}(\bm{\hat{y},y})=||\hat{y}-y||^2$
+    \begin{tcolorbox}
+      \begin{flalign*}
+        \theta_i = \theta_i - \alpha \frac{\partial \ell}{\partial \theta_i}
+      \end{flalign*}
+    \end{tcolorbox}
 \end{enumerate}
 
 \section*{Section 2.2}
