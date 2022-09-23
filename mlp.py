@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 class MLP:
     def __init__(
@@ -44,7 +46,16 @@ class MLP:
             x: tensor shape (batch_size, linear_1_in_features)
         """
         # TODO: Implement the forward function
-        pass
+        activations = {'relu':nn.ReLU(), 'sigmoid':nn.Sigmoid, 'id':nn.Identity()}
+        z1 = torch.matmul(x, self.parameters['W1'].t()) + torch.ger(torch.ones(x.shape[0]), self.parameters['b1'])
+        z2 = activations[self.f_function](z1)
+        z3 = torch.matmul(z2, self.parameters['W2'].t())+torch.ger(torch.ones(x.shape[0]), self.parameters['b2'])
+        self.cache['x'] = x
+        self.cache['z1'] = z1
+        self.cache['z2'] = z2
+        self.cache['z3'] = z3
+
+        return activations[self.g_function](z3)
     
     def backward(self, dJdy_hat):
         """
