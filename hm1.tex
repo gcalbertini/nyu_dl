@@ -176,8 +176,16 @@ We would like to perform multi-class classification task, so we set $f = tanh$ a
 \begin{enumerate}
   \item Why is softmax actually softargmax?
     \begin{tcolorbox}
-    
+      The "softmax" is not a smooth approximation to the maximum function -- it is actually an approximation to the arg max function whose value is the index that has the maximum. Accordingly, some prefer the "softargmax" terminolgy to emphasize this distinction.
   \end{tcolorbox}
+  \item Draw the computational graph defined by this function, with inputs $x, y, z \in \mathbb{R}$ and output $w \in \mathbb{R}$. You make use symbols $x, y, z,w$, and operators $+,\star$ in your solution. Be sure to use the correct shape for symbols and
+  operators as shown in class.
+  \begin{enumerate}
+    \item $a \star y + z  $
+    \item $b = (x+x) \star a$
+    \item $w = a \star b$
+  \end{enumerate}
+  %\includegraphics[]{"diagram.jpg"}
 \end{enumerate}
 
 \section*{Section 2.2}
