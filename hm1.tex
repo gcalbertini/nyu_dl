@@ -162,9 +162,9 @@ We would like to perform multi-class classification task, so we set $f = tanh$ a
       \begin{tcolorbox}
           |Loss|\\
           Input: $\bm{\hat{y}}$\\
-          Output: $\ell_{BCE}(\bm{\hat{y},y})=\frac{1}{K}\sum_{i=1}^{K}-[y_i\log(\hat{y_i})+(1-y_i)\log(1-\hat{\hat{y_i}})],$\\
+          Output: $\ell_{BCE}(\bm{\hat{y},y})=\frac{1}{K}\sum_{i=1}^{K}-[y_i\log(\hat{y_i})+(1-y_i)\log(1-\hat{y_i})],$\\
           $\hat{y_i}=\frac{1}{1+\exp(-z_{3i})}$\\
-          $\frac{\partial \ell}{\partial \hat{y}}=(\frac{-y_i}{\hat{y_i}}+\frac{1-y_i}{1-\hat{y_i}})^T$
+          $\frac{\partial \ell}{\partial \hat{y}}=(\frac{-y}{\hat{y}}+\frac{1-y}{1-\hat{y}})^T\implies\frac{\hat{y_i}-y_i}{\hat{y_i}(1-\hat{y_i})}$
       \end{tcolorbox}
   \item Things are getting better. You realize that not all intermediate hidden activations need to be binary (or soft version of binary). You decide to use $f(\cdot)=(\cdot)^{+}$ but keep g as $\sigma$. Explain why this choice of f can be beneficial for training a (deeper) network.
       \begin{tcolorbox}
@@ -218,7 +218,7 @@ We would like to perform multi-class classification task, so we set $f = tanh$ a
     \item Given a neural network F parameterized by parameters $\theta$, denoted $F_\theta$, dataset $D = x_1, x_2,\ldots, x_N $, and labels $Y = y_1, y_2,\ldots, y_N$, write down the mathematical definition of training a neural network with the MSE loss function $\ell_{MSE}(\bm{\hat{y},y})=||\hat{y}-y||^2$
     \begin{tcolorbox}
       \begin{flalign*}
-        \theta_i = \theta_i - \alpha \frac{\partial \ell}{\partial \theta_i}
+        \theta_{i+1} = \theta_i - \alpha \frac{\partial \ell}{\partial \theta_i}
       \end{flalign*}
     \end{tcolorbox}
 \end{enumerate}
@@ -228,7 +228,7 @@ We would like to perform multi-class classification task, so we set $f = tanh$ a
 \subsection*{Backpropagation }
 You need to implement the forward pass and backward pass for Linear, ReLU, Sigmoid, MSE loss, and BCE loss in the attached mlp.py file. We provide three example test cases test1.py, test2.py, test3.py. We will test your implementation with other hidden test cases, so please create your own test cases to make sure your implementation is correct.
 \subsection*{Gradient Descent}
-Given a image classifier, implement a function that performs optimization on the input (the image), to find the image that most highly represents the class. Extra credit awarded for cool visuals.
+Given a image classifier, implement a function that performs optimization on the input (the image), to find the image that most highly represents the class. Extra credit awarded for cool visuals. See gd.py.
 
 
 \end{document}
