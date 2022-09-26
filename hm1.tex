@@ -51,23 +51,21 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
   \item For a single data point $(x,y)$, write down all inputs and outputs for
         forward pass of each layer. You can only use variables and mechanics specified
         prior in your answer.
-        \begin{tcolorbox}
-          |$Linear_1$|\\ Input: $\bm{x}$\\Output ($z_1$): $\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}$\\
-          |$f$|\\ Input: $Linear_1(\bm{x})=\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}$\\
-          Output ($z_2$): $f(Linear_1(\bm{x}))=5ReLU(Linear_1(\bm{x}))\\
-            =5ReLU(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})$\\
-            $=5\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})$\\
-          |$Linear_2$|\\ Input: $f(Linear_1(\bm{x}))$\\
-          Output ($z_3$): $Linear_2(f(Linear_1(\bm{x})))=\bm{W}^{(2)}\bm{f(Linear_1(\bm{x}))}+\bm{b}^{(2)}$\\
-          $=5\bm{W}^{(2)}((\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)}$\\
-          |g|\\Input: $Linear_2(f(Linear_1(\bm{x})))$\\
-          Output: $g(Linear_2(f(Linear_1(\bm{x})))) = \\
-          5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})\bm{I}$=\\
-          $5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})=\bm{\hat{y}}$\\
-          |Loss|\\
-          Input: $\bm{\hat{y}}$\\
-          Output: $||(5(\bm{W}^{(2)}(\max(0,\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))+\bm{b}^{(2)})-\bm{y})||^2$\\
-        \end{tcolorbox}
+        \begin{table}[]
+          \begin{tcolorbox}
+            \centering
+            \begin{tabular}{|c|c|l|cc}
+              \cline{1-3}
+              \textbf{Layer}   & \textbf{Input} & \textbf{Output} &  &  \\ \cline{1-3}
+              \textit{$Linear_1$} & $\bm{x}$              & $\bm{z_1}=\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}$               &  &  \\ \cline{1-3}
+              \textit{f}       & $\bm{z_1}$              & $\bm{z_2}=5(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})^+$               &  &  \\ \cline{1-3}
+              \textit{$Linear_2$} & $\bm{z_2}$             & $\bm{z_3}=5\bm{W}^{(2)}(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})^++\bm{b}^{(2)}$               &  &  \\ \cline{1-3}
+              \textit{g}       & $\bm{z_3}$             & $\bm{z_3}$               &  &  \\ \cline{1-3}
+              \textit{Loss}    & $\bm{z_3, y}$              & $||\bm{\hat{y}-y}||^2=||5\bm{W}^{(2)}(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})^++\bm{b}^{(2)}-\bm{y}||^2$               &  &  \\ \cline{1-3}
+              \end{tabular}
+          \end{tcolorbox}
+          \end{table}
+          
   \item Write down the gradients calculated from the backward pass. You can only use the following variables: $\bm{x,y,W^{(1)},b^{(1)},W^{(2)},b^{(2)}}, \frac{\partial \ell}{\partial \bm{\hat{y}}}, \frac{\partial \bm{z_2}}{\partial \bm{z_1}},\frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}}$, where $\bm{z_1,z_2,z_3,\hat{y}}$ are outputs of $Linear_1,f,Linear_2,g$, respectively.
         \begin{tcolorbox}
           \begin{flalign*}
