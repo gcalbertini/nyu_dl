@@ -132,7 +132,6 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
           \frac{\partial \bm{\hat{y}}}{\partial \bm{z_3}},\frac{\partial \ell}{\partial
             \bm{\hat{y}}}$. Be careful about dimensionality.
         \begin{tcolorbox}
-          Note: $ i \in \left\lbrace1,\ldots,m\right\rbrace$ used throughout.
           \begin{flalign*}                                        
             \left( \frac{\partial \bm{z_2}}{\partial \bm{z_1}}	\right)_{ii} & =
             \begin{cases} 0,                            & z_{1i} < 0 \\ 5, & z_{1i} > 0 \\ \text{undefined (or
@@ -226,7 +225,7 @@ $\sigma(z)=\frac{1}{1+\exp(-z)}$.
           $\ell_{BCE}(\bm{\hat{y},y})=\frac{1}{K}\sum_{i=1}^{K}-[y_i\log(\hat{y_i})+(1-y_i)\log(1-\hat{y_i})],$\\
           $\hat{y_i}=\frac{1}{1+\exp(-z_{3i})}$\\
           $\frac{\partial \ell}{\partial
-              \hat{y}}=\frac{1}{K}(\frac{-y}{\hat{y}}+\frac{1-y}{1-\hat{y}})^T\implies \frac{1}{K}\frac{\hat{y_i}-y_i}{\hat{y_i}(1-\hat{y_i})}$
+              \hat{y}}=\frac{1}{K}(\frac{-y}{\hat{y}}+\frac{1-y}{1-\hat{y}})^T\implies \frac{1}{K}\frac{\hat{y_i}-y_i}{\hat{y_i}(1-\hat{y_i})}$ \text{ are elements}
         \end{tcolorbox}
   \item Things are getting better. You realize that not all intermediate hidden
         activations need to be binary (or soft version of binary). You decide to use
