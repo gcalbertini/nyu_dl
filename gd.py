@@ -5,7 +5,7 @@ from torchvision import transforms
 from torchvision.models import VGG13_BN_Weights, vgg13_bn
 from tqdm import tqdm
 
-DEVICE = "cpu"  # "cuda"
+DEVICE = "cuda"
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
 
@@ -46,7 +46,20 @@ def normalize_and_jitter(img, step=32):
 
 
 def gradient_descent(input, model, loss, iterations=256):
-    return input  # IMPLEMENT ME
+    input = normalize_and_jitter(input)
+    input = torch.nn.Parameter(input)
+    lr = 0.01
+
+    for _ in range(iterations):
+        logits = model(input)
+
+        l = loss(logits)
+        l.backward()
+
+        input.data = input.data + lr * input.grad.data
+        input.grad.data.zero_()
+
+    return input
 
 
 def forward_and_return_activation(model, input, module):
