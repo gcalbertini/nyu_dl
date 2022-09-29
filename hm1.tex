@@ -120,8 +120,8 @@ $\ell_{MSE}(\bm{\hat{y}},\bm{y})=||(\bm{\hat{y}}-\bm{y})||^2$.
               \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial
             \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}}                                                              \\
                                                                & =\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial
-            \bm{\hat{y}}}{\partial \bm{z_3}} = \frac{\partial \ell}{\partial z_3}   \\ 
-            \frac{\partial \ell}{\partial b^{(1)}} &= \frac{\partial \ell}{\partial z_1}\frac{\partial z_1}{\partial b^{(1)}} = \frac{\partial \ell}{\partial z_1}\\ 
+            \bm{\hat{y}}}{\partial \bm{z_3}}\\ 
+            \frac{\partial \ell}{\partial b^{(1)}} &= \frac{\partial \ell}{\partial \hat{y}}\frac{\partial \hat{y}}{\partial z_3}W^{(2)}\frac{\partial z_2 }{\partial z_1} \\ 
             \frac{\partial \ell}{\partial W^{(1)}} = \frac{\partial \ell}{\partial z_1} \frac{\partial z_1}{\partial W^{(1)}} &= \sum_i \frac{\partial \ell}{\partial (z_1)_i}\frac{\partial (z_1)_i}{\partial W^{(1)}} = \frac{\partial \ell}{\partial z_1}x^T = x\frac{\partial \ell}{\partial z_1}\\
             &= x\frac{\partial \ell}{\partial \hat{y}}\frac{\partial \hat{y}}{\partial z_3}W^{(2)}\frac{\partial z_2}{\partial z_1} \\
             \frac{\partial \ell}{\partial W^{(2)}} = \frac{\partial \ell}{\partial z_3} \frac{\partial z_3}{\partial W^{(2)}} &= \sum_i \frac{\partial \ell}{\partial (z_3)_i}\frac{\partial (z_3)_i}{\partial W^{(2)}} = \frac{\partial \ell}{\partial z_3}{z_2}^T =  z_2\frac{\partial \ell}{\partial z_3}\\
@@ -200,11 +200,11 @@ $\sigma(z)=\frac{1}{1+\exp(-z)}$.
               \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial \bm{\hat{y}}}{\partial
             \bm{z_3}}\frac{\partial \bm{z_3}}{\partial \bm{b^{(2)}}}                                                              \\
                                                                & =\frac{\partial \bm{\ell}}{\partial \bm{\hat{y}}}\frac{\partial
-            \bm{\hat{y}}}{\partial \bm{z_3}} = \frac{\partial \ell}{\partial z_3}   \\ 
-            \frac{\partial \ell}{\partial b^{(1)}} &= \frac{\partial \ell}{\partial z_1}\frac{\partial z_1}{\partial b^{(1)}} = \frac{\partial \ell}{\partial z_1}\\ 
-            \frac{\partial \ell}{\partial W^{(1)}} = \frac{\partial \ell}{\partial z_1} \frac{\partial z_1}{\partial W^{(1)}} &= \sum_i \frac{\partial \ell}{\partial (z_1)_i}\frac{\partial (z_1)_i}{\partial W^{(1)}} = \frac{\partial \ell}{\partial z_1}x^T = x\frac{\partial \ell}{\partial z_1}\\
+            \bm{\hat{y}}}{\partial \bm{z_3}} \\ 
+            \frac{\partial \ell}{\partial b^{(1)}} &= \frac{\partial \ell}{\partial z_1}\frac{\partial z_1}{\partial b^{(1)}} = \frac{\partial \ell}{\partial \hat{y}}\frac{\partial \hat{y}}{\partial z_3}W^{(2)}\frac{\partial z_2}{\partial z_1}\\ 
+            \frac{\partial \ell}{\partial W^{(1)}} = \frac{\partial \ell}{\partial z_1} \frac{\partial z_1}{\partial W^{(1)}} &= \sum_i \frac{\partial \ell}{\partial (z_1)_i}\frac{\partial (z_1)_i}{\partial W^{(1)}} = \frac{\partial \ell}{\partial z_1}x^T\\
             &=x\frac{\partial \ell}{\partial \hat{y}}\frac{\partial \hat{y}}{\partial z_3}W^{(2)}\frac{\partial z_2}{\partial z_1} \\
-            \frac{\partial \ell}{\partial W^{(2)}} = \frac{\partial \ell}{\partial z_3} \frac{\partial z_3}{\partial W^{(2)}} &= \sum_i \frac{\partial \ell}{\partial (z_3)_i}\frac{\partial (z_3)_i}{\partial W^{(2)}} = \frac{\partial \ell}{\partial z_3}{z_2}^T =  z_2\frac{\partial \ell}{\partial z_3}\\
+            \frac{\partial \ell}{\partial W^{(2)}} = \frac{\partial \ell}{\partial z_3} \frac{\partial z_3}{\partial W^{(2)}} &= \sum_i \frac{\partial \ell}{\partial (z_3)_i}\frac{\partial (z_3)_i}{\partial W^{(2)}} = \frac{\partial \ell}{\partial z_3}{z_2}^T\\
             &=\tanh(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)})\frac{\partial \ell}{\partial \hat{y}}\frac{\partial \hat{y}}{\partial z_3}\\
             {\left(\frac{\partial z_2}{\partial z_1}  \right)}_{ii} = [{(\sech(\bm{W}^{(1)}\bm{x}+\bm{b}^{(1)}))}]^2_{1i} &\text{ and off diagonal elements are 0}\\
             {\left(\frac{\partial \hat{y}}{\partial z_3}  \right)}_{ii} = \sigma((z_3)_i)(1-\sigma(z_3)_i) &\text{ and off diagonal elements are 0}\\
