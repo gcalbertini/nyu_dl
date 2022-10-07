@@ -1,0 +1,141 @@
+%This is my super simple Real Analysis Homework template
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,bm}
+\usepackage{minted}
+\usepackage[]{tcolorbox}
+\usepackage[]{amsthm} %lets us use \begin{proof}
+\usepackage[]{amssymb} %gives us the character \varnothing
+\usepackage{mathtools}
+\DeclareMathOperator{\sech}{sech}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\title{Homework 2}
+\author{Guilherme Albertini}
+\date\today
+%This information doesn't actually show up on your document unless you use the maketitle command below
+
+\begin{document}
+\maketitle %This command prints the title based on information entered above
+
+%Section and subsection automatically number unless you put the asterisk next to them.
+\section*{Theory}
+\subsection*{Problem 1.1: Convolutional Neural Netoworks}
+\begin{enumerate}
+  \item Given an input image of dimension $21 \times 12$, what will be output
+        dimension after applying a convolution with $4 \times 5$ kernel, stride
+        of 4,
+        and no padding?
+        \begin{tcolorbox}
+          \begin{flalign*}
+            5 \times 2
+          \end{flalign*}
+        \end{tcolorbox}
+
+  \item Given an input of dimension $C \times H \times W$ what will be the
+        dimension of the output of a convolutional layer with kernel of size $K
+          \times
+          K$, padding P, stride S, dilation D, and F filters. Assume that H
+        $\geq$ K, W
+        $\geq$ K.
+        \begin{tcolorbox}
+          Define Padding along height on top	  $P_{H1}$\\
+
+          Define Padding along height on bottom $P_{H2}$\\
+
+          Define Padding along width on left	  $P_{W1}$\\
+
+          Define Padding along width on right	$P _{W2}$\\
+
+          Define Kernel width		 $K_{H}$\\
+
+          Define Kernel height		  $K_{W}$\\
+
+          Define Stride horizontal		  $S_{W}$\\
+
+          Define Stride vertical		  $S_{H}$\\
+
+          Define Batch Count			  $B$\\
+
+          \begin{flalign*}
+                   & \text{Effect of adding padding and applying kernel to
+              dimensions:}
+            \\
+            H_P    & = P_{H1} + P_{H2} +
+            H                                                              \\
+            W_P    & = P_{W1} + P_{W2} +
+            W                                                              \\
+            H_{PK} & = H_1 - [D_H(K_H - 1)+1]                              \\
+                   & =P_{H1} + P_{H2} + H - [D_H(K_H - 1)+1]
+            \\
+            W_{PK} & = W_1 - [D_W(K_W - 1)+1]                              \\
+                   & =P_{W1} + P_{W2} + W - [D_W(K_W - 1)+1]
+            \\
+          \end{flalign*}
+        \end{tcolorbox}
+        \begin{tcolorbox}
+          \begin{flalign*}
+                    & \text{Considering stride to
+            dimensions:}                                                    \\
+            H_{PKS} & = \floor*{\frac{H_P -
+            [D_H(K_H - 1)+1]+S_H}{S_H}}
+            \\
+                    & =\floor*{\frac{P_{H1} + P_{H2} + H - [D_H(K_H - 1)+1]}{S_H}}+1 \\
+            W_{PKS} & = \floor*{\frac{W_P -
+            [D_W(K_W - 1)+1]+S_W}{S_W}}                                       \\
+                    & =\floor*{\frac{P_{W1} + P_{W2} + W - [D_W(K_W - 1)+1]}{S_W}}+1
+          \end{flalign*}
+        \end{tcolorbox}
+        \begin{tcolorbox}
+          We can make simplifcations that I think are implied here:
+          \begin{flalign*}
+            S & = S_W = S_H                         \\
+            D & = D_W = D_H                         \\
+            K & = K_W = K_H                         \\
+            B & = 1                                 \\
+            P & = P_{W1} + P_{W2} = P_{H1} + P_{H2} \\
+          \end{flalign*}
+          \begin{flalign*}
+            W & = \frac{2P + W - [D(K - 1)+1]}{S}+1                       \\
+            H & = \frac{2P + H - [D(K - 1)+1]}{S}+1                       \\
+              & \text{Thus the output dimension is: }                     \\
+               F \times &\left( \floor*{\frac{2P + H - [D(K - 1)+1]}{S}}+1 \right)
+            \times \left(\floor*{\frac{2P + W - [D(K - 1)+1]}{S}}+1	 \right)
+          \end{flalign*}
+        \end{tcolorbox}
+  \item Write d
+
+  \item Show
+
+\end{enumerate}
+
+%If you want centered math on its own line, you can use a slash and square
+%bracket.\\
+%\[
+%  \left \{
+%  \sum\limits_{k=1}^\infty l(I_k):A\subseteq \bigcup_{k=1}^\infty \{I_k\}
+%  \right \}
+%\]
+%The left and right commands make the brackets get as big as we need them to
+%be.
+
+\clearpage %Gives us a page break before the next section. Optional.
+\subsection*{Problem 1.2: Recurrent Neural Networks}
+
+$\sigma(z)=\frac{1}{1+\exp(-z)}$.
+\begin{enumerate}
+  \item If you want
+
+  \item Now
+\end{enumerate}
+
+\subsection*{Problem 1.3: Debugging Loss Curves}
+%
+\begin{enumerate}
+  \item Why is softmax actually softargmax?
+\end{enumerate}
+
+\end{document}
