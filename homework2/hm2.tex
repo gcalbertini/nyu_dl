@@ -106,7 +106,13 @@
             \times \left(\floor*{\frac{2P + W - [D(K - 1)+1]}{S}}+1	 \right)
           \end{flalign*}
         \end{tcolorbox}
-  \item Write d
+  \item Let's consider an input $x[n] \in \mathbb{R}^5$, with $1 \leq n \leq 7$, e.g. it is a length 7 se-
+  quence with 5 channels. We consider the convolutional layer $f_W$ with one filter, with kernel size 3, stride of 2, no dilation, and no padding. The only
+  parameters of the convolutional layer is the weight$ W, W \in \mathbb{R}^{1 \times 5 \times 3}$ and there is no bias and no non-linearity.
+        \begin{enumerate}
+          \item What is the dimension of the output $f_W(x)$? Provide an expression for the value of elements of the convolutional layer output $f_W(x)$.
+          Example answer format here and in the following sub-problems: $f_W(x) \in \mathbb{R}^{42 \times 42 \times 42}, f_W(x)[i, j,k] = 42.$
+        \end{enumerate}
 
   \item Show
 
