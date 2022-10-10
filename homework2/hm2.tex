@@ -23,6 +23,9 @@
 
 %Section and subsection automatically number unless you put the asterisk next to them.
 \section*{Theory}
+% References: 
+% https://distill.pub/2019/computing-receptive-fields/
+% https://arxiv.org/abs/1603.07285
 \subsection*{Problem 1.1: Convolutional Neural Networks}
 \begin{enumerate}
   \item Given an input image of dimension $21 \times 12$, what will be output
@@ -60,6 +63,8 @@
 
           Define Batch Count			  $B$\\
 
+          Note that for Dilated kernel: $$K' = K+(K - 1)(D - 1) = K+KD-K-D+1=  D(K-1)+1$$.
+
           \begin{flalign*}
                    & \text{Effect of adding padding and applying kernel to
               dimensions:}
@@ -78,12 +83,12 @@
         \end{tcolorbox}
         \begin{tcolorbox}
           \begin{flalign*}
-                    & \text{Considering stride to
+            & \text{Considering stride to
             dimensions:}                                              \\
             H_{PKS} & = \floor*{\frac{H_P -
             [D_H(K_H - 1)+1]+S_H}{S_H}}
             \\
-                    & =\floor*{\frac{P_{H1} + P_{H2} + H - [D_H(K_H -
+            & =\floor*{\frac{P_{H1} + P_{H2} + H - [D_H(K_H -
             1)+1]}{S_H}}+1                                            \\
             W_{PKS} & = \floor*{\frac{W_P -
             [D_W(K_W - 1)+1]+S_W}{S_W}}
@@ -122,28 +127,32 @@
                 Example answer format here and in the following sub-problems: $f_W(x)
                   \in \mathbb{R}^{42 \times 42 \times 42}, f_W(x)[i, j,k] = 42.$
                 \begin{tcolorbox}
+                  The general recurrence equation (which is first-order, non-homogeneous, with variable coefficients): $r_{l-1} = s_{l}r_{l}-(s_{l}-k_{l}) = s_l(r_l-1)+k_l$
                   \begin{flalign*}
-                    f_W(x)    & \in \mathbb{R}^2                                     \\
-                    f_W(x)[r] & = \sum_{k=1}^{5}\sum_{k=1}^{3} x[i+2(r-1)][k]W_{k,i}
+                    f_W(x)    & \in \mathbb{R}^3                                     \\
+                    f_W(x)[r] & = \sum_{c=1}^{5}\sum_{k=1}^{3} x[k+2(r-1), c]W_{c,k}
                   \end{flalign*}
+                  For $r = \{i : i \in \mathbb{N}, i \in [1, \dim(f_W)]\}$
                 \end{tcolorbox}\
           \item What is the dimension of $\frac{\partial f_W(x)}{\partial W}$?
                 What are its values?
                 \begin{tcolorbox}
+                  Note: There are a few ways one could interpret the transpose of the tensor (W) depending on which dimensions are to be transposed in numerator format. Using a chosen transpose with numerator layout format.
                   \begin{flalign*}
-                    \frac{\partial f_W(x)}{\partial W}          & \in \mathbb{R}^{5 \times (1
-                    \times 5 \times 3)}                                                       \\
-                    \frac{\partial f_W(x)}{\partial W}[r,c,i,k] & =x[i+2(r-1)][k]
+                    \frac{\partial f_W(x)}{\partial W}          & \in \mathbb{R}^{3 \times (3 \times 5 \times 1)
+                    }                                                       \\
+                    \frac{\partial f_W(x)}{\partial W}[r,c,k] & =x[k+2(r-1),c]
                   \end{flalign*}
                 \end{tcolorbox}
           \item What is the dimension of $\frac{\partial f_W(x)}{\partial x}$?
                 What are its values?
                 \begin{tcolorbox}
+                  See note above.
                   \begin{flalign*}
-                    \frac{\partial f_W(x)}{\partial x}        & \in \mathbb{R}^{2 \times (2
-                    \times 7)}                                                                                    \\
-                    \frac{\partial f_W(x)}{\partial x}[r,k,i] & = \begin{cases}
-                                                                    W_{1,k,i-2(r-1)} & \text{if } i-2(r-1) \in [1,3] \\
+                    \frac{\partial f_W(x)}{\partial x}        & \in \mathbb{R}^{3 \times (7
+                    \times 5)}                                                                                    \\
+                    \frac{\partial f_W(x)}{\partial x}[r,c,k] & = \begin{cases}
+                                                                    W_{c,k-2(r-1)} & \text{if } k-2(r-1) \in [1,3] \\
                                                                     0                & \text{otherwise }
                                                                   \end{cases}
                   \end{flalign*}
@@ -232,6 +241,7 @@ in the following.
 
 \subsection*{Problem 1.4: Debugging Loss Curves}
 %
+See homework diagrams.
 \begin{enumerate}
   \item What causes the spikes on the left?
   \item How can they be higher than the initial value of the loss?
