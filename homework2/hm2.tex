@@ -99,19 +99,47 @@
             P & = P_{W1} + P_{W2} = P_{H1} + P_{H2} \\
           \end{flalign*}
           \begin{flalign*}
-            W & = \frac{2P + W - [D(K - 1)+1]}{S}+1                       \\
-            H & = \frac{2P + H - [D(K - 1)+1]}{S}+1                       \\
               & \text{Thus the output dimension is: }                     \\
-               F \times &\left( \floor*{\frac{2P + H - [D(K - 1)+1]}{S}}+1 \right)
-            \times \left(\floor*{\frac{2P + W - [D(K - 1)+1]}{S}}+1	 \right)
+               F \times &\left( \floor*{\frac{2P + H - [D(K - 1)+1]}{S}}+1 \right)\\
+            \times &\left(\floor*{\frac{2P + W - [D(K - 1)+1]}{S}}+1	 \right)
           \end{flalign*}
         \end{tcolorbox}
-  \item Let's consider an input $x[n] \in \mathbb{R}^5$, with $1 \leq n \leq 7$, e.g. it is a length 7 se-
-  quence with 5 channels. We consider the convolutional layer $f_W$ with one filter, with kernel size 3, stride of 2, no dilation, and no padding. The only
-  parameters of the convolutional layer is the weight$ W, W \in \mathbb{R}^{1 \times 5 \times 3}$ and there is no bias and no non-linearity.
+  \item Let's consider an input $x[n] \in \mathbb{R}^5$, with $1 \leq n \leq 7$, e.g. it is a length 7 sequence with 5 channels. We consider the convolutional layer $f_W$ with one filter, with kernel size 3, stride of 2, no dilation, and no padding. The only
+  parameters of the convolutional layer is the weight $W, W \in \mathbb{R}^{1 \times 5 \times 3}$ and there is no bias and no non-linearity.
         \begin{enumerate}
           \item What is the dimension of the output $f_W(x)$? Provide an expression for the value of elements of the convolutional layer output $f_W(x)$.
           Example answer format here and in the following sub-problems: $f_W(x) \in \mathbb{R}^{42 \times 42 \times 42}, f_W(x)[i, j,k] = 42.$
+          \begin{tcolorbox}
+            \begin{flalign*}
+              f_W(x) &\in \mathbb{R}^2\\
+              f_W(x)[r] &= \sum_{k=1}^{5}\sum_{k=1}^{3} x[i+2(r-1)][k]W_{k,i}
+            \end{flalign*}
+          \end{tcolorbox}\
+          \item What is the dimension of $\frac{\partial f_W(x)}{\partial W}$? What are its values?
+          \begin{tcolorbox}
+            \begin{flalign*}
+              \frac{\partial f_W(x)}{\partial W} &\in \mathbb{R}^{5 \times (1 \times 5 \times 3)}\\
+              \frac{\partial f_W(x)}{\partial W}[r,c,i,k]&=x[i+2(r-1)][k]
+            \end{flalign*}
+          \end{tcolorbox}
+          \item What is the dimension of $\frac{\partial f_W(x)}{\partial x}$? What are its values?
+            \begin{tcolorbox}
+              \begin{flalign*}
+                \frac{\partial f_W(x)}{\partial x} &\in \mathbb{R}^{2 \times (2 \times 7)}\\
+                \frac{\partial f_W(x)}{\partial x}[r,k,i]& = \begin{cases}
+                  W_{1,k,i-2(r-1)} & \text{if } i-2(r-1) \in [1,3]\\
+                  0 & \text{otherwise }
+              \end{cases}
+              \end{flalign*}
+            \end{tcolorbox}
+          \item Now, suppose you are given the gradient of the loss $\ell$ with respect to the output of the convolutional layer $f_W(x)$, i.e. $\frac{\partial \ell}{\partial f_W(x)}$. What is the dimension of $\frac{\partial \ell}{\partial W}$? Provide its expression. Explain the similarities and differences of this and expression in (a).
+          \begin{tcolorbox}
+            \begin{flalign*}
+              \frac{\partial \ell}{\partial W} &\in \mathbb{R}^{a \times b \times c}\\
+              \left( \frac{\partial \ell }{\partial W}\right)[1,k,i] &= \sum_{r = 1}^{23232}\left(\frac{\partial \ell}{\partial f_W(x)}\right)[r]x[i+2(r-1),k]
+            \end{flalign*}
+            The difference is that this is a dilated convolution. Both the backward and forward pass of the conv. layer apply a convolution but the stride dilates in the backward pass.
+          \end{tcolorbox}
         \end{enumerate}
 
   \item Show
