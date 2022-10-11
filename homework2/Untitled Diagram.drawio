@@ -1,1 +1,129 @@
-<mxfile host="app.diagrams.net" modified="2022-10-10T22:18:26.591Z" agent="5.0 (Windows)" version="20.4.0" etag="rZwuyBb0zb23n3-k8m4t" type="github"><diagram id="4UpJLdS6elqlYcDQ6dUp">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-10-11T00:08:45.588Z" agent="5.0 (Windows)" etag="NUw71Av0PBWZCxq6k8Q4" version="20.4.0" type="github">
+  <diagram id="4UpJLdS6elqlYcDQ6dUp" name="Page-1">
+    <mxGraphModel dx="1426" dy="342" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Fchoqh_parhG-n5rcGHE-1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=default;sketch=0;shadow=0;glass=0;" vertex="1" parent="1">
+          <mxGeometry x="160" y="160" width="430" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-4" target="Fchoqh_parhG-n5rcGHE-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="350" />
+              <mxPoint x="190" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=13;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-4" target="Fchoqh_parhG-n5rcGHE-16">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="190" />
+              <mxPoint x="480" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-4" value="h[t-1]" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="310" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-5" target="Fchoqh_parhG-n5rcGHE-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="440" />
+              <mxPoint x="190" y="290" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=13;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-5" target="Fchoqh_parhG-n5rcGHE-37">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="489" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-5" value="x[t]" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="400" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-6" target="Fchoqh_parhG-n5rcGHE-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-6" value="&lt;b&gt;σ&lt;/b&gt;" style="shape=or;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="250" y="230" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-12" target="Fchoqh_parhG-n5rcGHE-16">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="460" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=13;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-12" target="Fchoqh_parhG-n5rcGHE-23">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="270" />
+              <mxPoint x="440" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-12" value="c[t]" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="345" y="230" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=13;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-16" target="Fchoqh_parhG-n5rcGHE-41">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-16" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="460" y="250" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-20" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://cdn2.iconfinder.com/data/icons/font-awesome/1792/dot-circle-o-128.png;fontSize=13;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="469" y="259" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=13;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-23" target="Fchoqh_parhG-n5rcGHE-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-23" value="&lt;b&gt;*&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="385" y="360" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.675;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=13;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-30" target="Fchoqh_parhG-n5rcGHE-37">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="330" y="427" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-30" value="&lt;b&gt;+&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="310" y="360" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=13;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-32" target="Fchoqh_parhG-n5rcGHE-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-32" value="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="240" y="360" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=13;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-34" target="Fchoqh_parhG-n5rcGHE-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-34" value="-1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="310" y="310" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=13;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-37" target="Fchoqh_parhG-n5rcGHE-41">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-37" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="469" y="400" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-38" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://cdn2.iconfinder.com/data/icons/font-awesome/1792/dot-circle-o-128.png;fontSize=13;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="478" y="409" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=13;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Fchoqh_parhG-n5rcGHE-41" target="Fchoqh_parhG-n5rcGHE-45">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="630" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-41" value="&lt;b&gt;+&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="520" y="310" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Fchoqh_parhG-n5rcGHE-45" value="h[t]" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="630" y="290" width="80" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
