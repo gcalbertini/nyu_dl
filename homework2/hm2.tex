@@ -264,7 +264,7 @@ in the following.
 \begin{enumerate}
   \item Draw a diagram for this RNN.
   \item What is the dimension of $a[t]$?
-  \item Extend this to AttentionRNN(k), a netowrk that uses the last k state
+  \item Extend this to AttentionRNN(k), a network that uses the last k state
         vectors h. Write out a system of equations that defines it.
   \item Modify the above netork to produce AttentionRNN($\infty$), a network
         that uses every past state vector. Write out a system of equations that defines
@@ -282,10 +282,29 @@ in the following.
 \includegraphics[width=14cm]{"loss.png"}
 \begin{enumerate}
   \item What causes the spikes on the left?
+    \begin{tcolorbox}
+      Underparametrization of the model at that point in development.
+    \end{tcolorbox}
   \item How can they be higher than the initial value of the loss?
+    \begin{tcolorbox}
+       At that point in training, the selected parametrization produced a model that was less performant than this initialization (i.e. was worse than randomly selecting one of the classes).
+    \end{tcolorbox}
   \item What are some ways to fix them?
+    \begin{tcolorbox}
+      We can select a more conservative learning rate, add regularization or dropout in the convolutional layers, increase the dataset size, normalize batches or increase either the batch size or number of layers.
+    \end{tcolorbox}
   \item Explain why the loss and accuracy are at these set values before
-        training starts. You may need to check the task definition in the notebook,
+        training starts. You may need to check the task definition in the notebook.
+        \begin{tcolorbox}
+          Models are initialized with near-zero random weights that essentially collapse output to near zero, thus energy of model $F(x,Y) \approx 0$. When we take a look at:
+      \begin{flalign*}
+        L[F(x,Y),y] &= F(x,y)+\frac{1}{\beta} \log \sum_{y' \in Y}\exp(-\beta F(x,y'))\\
+        &= F(x,y) - softmin_{\beta}[F(x,Y)]\\
+        -\nabla_{F(x,y)}L[F(x,Y),y] &= \tilde{y}-y
+      \end{flalign*}
+      Where $\tilde{y}$ is the softargmin at that point; the average of all classes produces the uniform distribution and $y$ is the one-hot encoding for the correct class that will ``push'' its energy down by magnitude 1 while pulling up all other energies for each update step. 
+          When we shoot the untrained model's zero vector into softargmin we get each entry as $1/K = 1/4 = 0.25$ and compute cross entropy loss of $-\log_{e}(1/K) = \log(4) \approx 1.39$ which is what we see at the initial (untrained) loss region. We also see the 0.25 random choice for accuracy at this region above.
+        \end{tcolorbox}
 \end{enumerate}
 
 \end{document}
