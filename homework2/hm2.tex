@@ -188,7 +188,11 @@
 
 \clearpage %Gives us a page break before the next section. Optional.
 \subsection*{Problem 1.2: Recurrent Neural Networks}
-
+% References:
+% https://mmuratarat.github.io/2019-02-07/bptt-of-rnn
+% https://jramapuram.github.io/ramblings/rnn-backrpop/
+% https://talwarabhimanyu.github.io/blog/2018/07/31/rnn-backprop
+% https://towardsdatascience.com/backpropagation-in-rnn-explained-bdf853b4e1c2
 In this section consider simple recurrent neural network defined by:
 \begin{flalign}
   c[t] &=\sigma(W_{c}x[t]+W_{h}h[t-1])\\
@@ -210,15 +214,32 @@ here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
     \end{flalign*}
   \end{tcolorbox}
   \item Suppose that we run the RNN to get a sequence of $h[t]$ for t from 1 to
-        K. Assumging we know the derivative $\frac{\partial \ell}{\partial h[t]}$,
+        K. Assuming we know the derivative $\frac{\partial \ell}{\partial h[t]}$,
         provide the dimension of an expression for values of $\frac{\partial
             \ell}{\partial W_x}$. What are the similarities and differences between
         backward and forward pass of RNN?
         \begin{tcolorbox}
           \begin{flalign*}
-            \frac{\partial \ell }{\partial W_x} = \sum_{t = 1}^{K}\frac{\partial \ell}{\partial h[t]}\frac{\partial h[t]}{\partial W_x} = 
+            \frac{\partial \ell}{\partial W_x} &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\frac{\partial h[t]}{\partial W_x}\\
           \end{flalign*}
+          Note that the first term of $\frac{\partial h[t]}{\partial W_x}$ has dependence on the prior term recursively so need chain rule: $\frac{\partial h[t]}{\partial h[t-1]}\frac{h[t-1]}{W_x}$\\
         \end{tcolorbox}
+        \begin{flalign*}
+          &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \frac{\partial h[i]}{\partial h[i-1]}\frac{\partial h[i-1]}{\partial W_x} \right)  \right)\\
+          &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \frac{\partial h[i+1]}{\partial h[i]}\frac{\partial h[i]}{\partial W_x} \right)  \right)\\
+        \end{flalign*}
+        Where the last step was done to account for the adjustment at undefined behavior for partials of $h[0]$ and keep at most $K-1$ recursive sums. Note:
+        \begin{flalign*}
+          \frac{\partial([1-c[t]]\odot W_{x}x[t])}{W_x} &= \frac{{diag(1-c[t])\partial(W_{x}x[t])+diag(W_{x}x[t])\partial(1-c[t])}}{\partial W_x}\\
+          & = diag(1-c[t]) \frac{\partial W_{x}x[t]}{\partial W_x}\\
+          & = (1-c[t]) \odot X\\
+          \text{Where } X \in \mathbb{R}^{m \times (m \times n)} &\text{ and column j is not zero: } X_j = [0 \times (j - 1), x[t], 0, \ldots]\\
+        \end{flalign*}
+        \begin{flalign*}
+          \frac{\partial \ell}{\partial W_x} &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( (1-c[t]) \odot X +\sum_{i=1}^{t-1}\left( \prod_{j=i}^{t-2} \frac{\partial h[i+1]}{\partial h[i]} \right) [(1-c[t]) \odot X] \right)\\
+          \frac{\partial h[i+1]}{h[i]} &= diag(c[t])+diag(h[t-1])\frac{\partial c[t]}{\partial h[t-1]}-diag(W_{x}x[t])\frac{\partial c}{\partial h[t-1]}\\
+          \frac{\partial c[t]}{\partial h[t-1]}
+        \end{flalign*}
   \item  Can this network be subject to vanishing or exploding gradients?
 \end{enumerate}
 
