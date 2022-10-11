@@ -223,9 +223,8 @@ here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
             \frac{\partial \ell}{\partial W_x} &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\frac{\partial h[t]}{\partial W_x}\\
           \end{flalign*}
           Note that the first term of $\frac{\partial h[t]}{\partial W_x}$ has dependence on the prior term recursively so need chain rule: $\frac{\partial h[t]}{\partial h[t-1]}\frac{h[t-1]}{W_x}$\\
-        \end{tcolorbox}
-        \begin{flalign*}
-          &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \frac{\partial h[i]}{\partial h[i-1]}\frac{\partial h[i-1]}{\partial W_x} \right)  \right)\\
+          \begin{flalign*}
+            &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \frac{\partial h[i]}{\partial h[i-1]}\frac{\partial h[i-1]}{\partial W_x} \right)  \right)\\
           &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \frac{\partial h[i+1]}{\partial h[i]}\frac{\partial h[i]}{\partial W_x} \right)  \right)\\
         \end{flalign*}
         Where the last step was done to account for the adjustment at undefined behavior for partials of $h[0]$ and keep at most $K-1$ recursive sums. Note:
@@ -236,24 +235,29 @@ here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
           \text{Where } X \in \mathbb{R}^{m \times (m \times n)} &\text{ and column j is not zero: } X_j = [0 \times (j - 1), x[t], 0, \ldots]\\
         \end{flalign*}
         \begin{flalign*}
-          \frac{\partial \ell}{\partial W_x} &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( (1-c[t]) \odot X +\sum_{i=1}^{t-1}\left( \prod_{j=i}^{t-2} \frac{\partial h[i+1]}{\partial h[i]} \right) [(1-c[t]) \odot X] \right)\\
-          \frac{\partial h[i+1]}{h[i]} &= diag(c[t])+diag(h[t-1])\frac{\partial c[t]}{\partial h[t-1]}-diag(W_{x}x[t])\frac{\partial c}{\partial h[t-1]}\\
-          \frac{\partial c[t]}{\partial h[t-1]}
+          \frac{\partial \ell}{\partial W_x} = \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}&\left( (1-c[t]) \odot X +\sum_{i=1}^{t-1}\left( \prod_{j=i}^{t-2} \frac{\partial h[i+1]}{\partial h[i]} \right) [(1-c[t]) \odot X] \right)\\
+          \frac{\partial h[i+1]}{h[i]} &= diag(c[t])+diag(h[t-1])\frac{\partial c[t]}{\partial h[t-1]}-\\
+          &diag(W_{x}x[t])\frac{\partial c}{\partial h[t-1]}\\
+          \frac{\partial c[t]}{\partial h[t-1]} = W_{h}diag&(\sigma(W_{c}x[t]+W_{h}h[t-1]))\odot(1-\sigma(W_{c}x[t]+W_{h}h[t-1]))
         \end{flalign*}
-  \item  Can this network be subject to vanishing or exploding gradients?
-\end{enumerate}
-
-\subsection*{Problem 1.3: AttentionRNN(2)}
-
-Now define AttentionRNN(2) as:
-\begin{flalign}
-  q_0[t],q_1[t],q_2[t] & = Q_0x[t],Q_1h[t-1],Q_2h[t-2]               \\
-  k_0[t],k_1[t],k_2[t] & = K_0x[t],K_1h[t-1],K_2h[t-2]               \\
-  v_0[t],v_1[t],v_2[t] & = V_0x[t],V_1h[t-1],V_2h[t-2]               \\
-  w_i[t]               & = q_i[t]^{T}k_i[t]                          \\
-  a[t]                 & = \text{softargmax}([w_0[t],w_1[t],w_2[t]]) \\
-  h[t]                 & = \sum_{i=0}^{2}a_i[t]v_i[t]
-\end{flalign}
+      \end{tcolorbox}
+        \item  Can this network be subject to vanishing or exploding gradients?
+        \begin{tcolorbox}
+          The vector $h[t]$ is not being multiplied by matrices throughout timesteps so will not have exploding gradients. It can vanishing gradients as the element-wise multiplication of values of $h[t]$ and $c[t]$ are between 0 and 1.
+        \end{tcolorbox}
+      \end{enumerate}
+      
+      \subsection*{Problem 1.3: AttentionRNN(2)}
+      
+      Now define AttentionRNN(2) as:
+      \begin{flalign}
+        q_0[t],q_1[t],q_2[t] & = Q_0x[t],Q_1h[t-1],Q_2h[t-2]               \\
+        k_0[t],k_1[t],k_2[t] & = K_0x[t],K_1h[t-1],K_2h[t-2]               \\
+        v_0[t],v_1[t],v_2[t] & = V_0x[t],V_1h[t-1],V_2h[t-2]               \\
+        w_i[t]               & = q_i[t]^{T}k_i[t]                          \\
+        a[t]                 & = \text{softargmax}([w_0[t],w_1[t],w_2[t]]) \\
+        h[t]                 & = \sum_{i=0}^{2}a_i[t]v_i[t]
+      \end{flalign}
 where $x_i[t],h[t] \in \mathbb{R}^n$ and $Q_i, K_i, V_i \in \mathbb{R}^{n
     \times n}.$ We define $h[t] = 0$ for $t < 1$. You may safely ignore base cases
 in the following.
