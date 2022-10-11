@@ -130,7 +130,7 @@
                   The general recurrence equation (which is first-order, non-homogeneous, with variable coefficients): $r_{l-1} = s_{l}r_{l}-(s_{l}-k_{l}) = s_l(r_l-1)+k_l$
                   \begin{flalign*}
                     f_W(x)    & \in \mathbb{R}^3                                     \\
-                    f_W(x)[r] & = \sum_{c=1}^{5}\sum_{k=1}^{3} x[k+2(r-1), c]W_{c,k}
+                    f_W(x)[r] & = \sum_{c=1}^{5}\sum_{k=1}^{3} x[k+2(r-1), c]W_{1,c,k}
                   \end{flalign*}
                   For $r = \{i : i \in \mathbb{N}, i \in [1, \dim(f_W)]\}$
                 \end{tcolorbox}\
@@ -152,7 +152,7 @@
                     \frac{\partial f_W(x)}{\partial x}        & \in \mathbb{R}^{3 \times (7
                     \times 5)}                                                                                    \\
                     \frac{\partial f_W(x)}{\partial x}[r,c,k] & = \begin{cases}
-                                                                    W_{c,k-2(r-1)} & \text{if } k-2(r-1) \in [1,3] \\
+                                                                    W_{1,c,k-2(r-1)} & \text{if } k-2(r-1) \in [1,3] \\
                                                                     0                & \text{otherwise }
                                                                   \end{cases}
                   \end{flalign*}
@@ -164,14 +164,14 @@
                 differences of this and expression in (a).
                 \begin{tcolorbox}
                   \begin{flalign*}
-                    \frac{\partial \ell}{\partial W}                       & \in \mathbb{R}^{a \times b
-                    \times c}                                                                           \\
-                    \left( \frac{\partial \ell }{\partial W}\right)[1,k,i] & = \sum_{r
-                      = 1}^{23232}\left(\frac{\partial \ell}{\partial f_W(x)}\right)[r]x[i+2(r-1),k]
+                    \frac{\partial \ell}{\partial W} &= \frac{\partial \ell}{\partial f_W}\frac{\partial f_W}{\partial W}\\
+                    \frac{\partial \ell}{\partial W}                       & \in \mathbb{R}^{3 \times 5
+                    \times 1}                                                                           \\
+                    \left( \frac{\partial \ell }{\partial W}\right)[1,c,k] & = \sum_{r
+                      = 1}^{3}\left(\frac{\partial \ell}{\partial f_W(x)}\right)[r]x[k+2(r-1),c]
                   \end{flalign*}
-                  The difference is that this is a dilated convolution. Both the
-                  backward and forward pass of the conv. layer apply a convolution but the stride
-                  dilates in the backward pass.
+                  Both the backward and forward pass of the convolutional layer apply a convolution but the stride
+                  dilates in the backward pass; we can consider dilation factor $D$ as the gradient of the loss with respect to the output of the convolutional layer.
                 \end{tcolorbox}
         \end{enumerate}
 \end{enumerate}
@@ -191,8 +191,8 @@
 
 In this section consider simple recurrent neural network defined by:
 \begin{flalign}
-  c[t] &=\sigma(W_{c}x[t]+W_h[h][t-1])\\
-  z[t]&=c[t]\odot h[t-1] + (1-c[t]) \odot W_{x}x[t]
+  c[t] &=\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+  h[t]&=c[t]\odot h[t-1] + (1-c[t]) \odot W_{x}x[t]
 \end{flalign} 
 here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
   \in \mathbb{R}^m, W_c \in \mathbb{R}^{m \times n}, W_h \in \mathbb{R}^{m \times
@@ -200,12 +200,25 @@ here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
   \coloneqq 0.$
 \begin{enumerate}
   \item Draw a diagram for this RNN.
+  \begin{tcolorbox}
+    \includegraphics[width=10.5cm]{"diagram.png"}
+  \end{tcolorbox}
   \item What is the dimension of $c[t]$?
+  \begin{tcolorbox}
+    \begin{flalign*}
+      c[t] \in \mathbb{R}^m
+    \end{flalign*}
+  \end{tcolorbox}
   \item Suppose that we run the RNN to get a sequence of $h[t]$ for t from 1 to
         K. Assumging we know the derivative $\frac{\partial \ell}{\partial h[t]}$,
         provide the dimension of an expression for values of $\frac{\partial
             \ell}{\partial W_x}$. What are the similarities and differences between
         backward and forward pass of RNN?
+        \begin{tcolorbox}
+          \begin{flalign*}
+            \frac{\partial \ell }{\partial W_x} = \sum_{t = 1}^{K}\frac{\partial \ell}{\partial h[t]}\frac{\partial h[t]}{\partial W_x} = 
+          \end{flalign*}
+        \end{tcolorbox}
   \item  Can this network be subject to vanishing or exploding gradients?
 \end{enumerate}
 
@@ -241,7 +254,7 @@ in the following.
 
 \subsection*{Problem 1.4: Debugging Loss Curves}
 %
-See homework diagrams.
+\includegraphics[width=14cm]{"loss.png"}
 \begin{enumerate}
   \item What causes the spikes on the left?
   \item How can they be higher than the initial value of the loss?
