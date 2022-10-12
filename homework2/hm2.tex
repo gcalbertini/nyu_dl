@@ -189,6 +189,7 @@
 \clearpage %Gives us a page break before the next section. Optional.
 \subsection*{Problem 1.2: Recurrent Neural Networks}
 % References:
+% https://d2l.ai/chapter_recurrent-neural-networks/bptt.html
 % https://mmuratarat.github.io/2019-02-07/bptt-of-rnn
 % https://jramapuram.github.io/ramblings/rnn-backrpop/
 % https://talwarabhimanyu.github.io/blog/2018/07/31/rnn-backprop
@@ -216,30 +217,28 @@ here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
   \item Suppose that we run the RNN to get a sequence of $h[t]$ for t from 1 to
         K. Assuming we know the derivative $\frac{\partial \ell}{\partial h[t]}$,
         provide the dimension of an expression for values of $\frac{\partial
-            \ell}{\partial W_x}$. What are the similarities and differences between
-        backward and forward pass of RNN?
+            \ell}{\partial W_x}$. What are the similarities between
+        backward and forward pass of this RNN?
         \begin{tcolorbox}
           \begin{flalign*}
             \frac{\partial \ell}{\partial W_x} &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\frac{\partial h[t]}{\partial W_x}\\
           \end{flalign*}
           Note that the first term of $\frac{\partial h[t]}{\partial W_x}$ has dependence on the prior term recursively so need chain rule: $\frac{\partial h[t]}{\partial h[t-1]}\frac{h[t-1]}{W_x}$\\
           \begin{flalign*}
-            &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \frac{\partial h[i]}{\partial h[i-1]}\frac{\partial h[i-1]}{\partial W_x} \right)  \right)\\
-          &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \frac{\partial h[i+1]}{\partial h[i]}\frac{\partial h[i]}{\partial W_x} \right)  \right)\\
+            &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \prod_{j=i+1}^{t} \frac{\partial h[i]}{\partial h[i-1]}\frac{\partial h[i-1]}{\partial W_x} \right)  \right)\\
         \end{flalign*}
-        Where the last step was done to account for the adjustment at undefined behavior for partials of $h[0]$ and keep at most $K-1$ recursive sums. Note:
+        Note:
         \begin{flalign*}
           \frac{\partial([1-c[t]]\odot W_{x}x[t])}{W_x} &= \frac{{diag(1-c[t])\partial(W_{x}x[t])+diag(W_{x}x[t])\partial(1-c[t])}}{\partial W_x}\\
           & = diag(1-c[t]) \frac{\partial W_{x}x[t]}{\partial W_x}\\
           & = (1-c[t]) \odot X\\
-          \text{Where } X \in \mathbb{R}^{m \times (m \times n)} &\text{ and column j is not zero: } X_j = [0 \times (j - 1), x[t], 0, \ldots]\\
         \end{flalign*}
+        Thus,
         \begin{flalign*}
-          \frac{\partial \ell}{\partial W_x} = \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}&\left( (1-c[t]) \odot X +\sum_{i=1}^{t-1}\left( \prod_{j=i}^{t-2} \frac{\partial h[i+1]}{\partial h[i]} \right) [(1-c[t]) \odot X] \right)\\
-          \frac{\partial h[i+1]}{h[i]} &= diag(c[t])+diag(h[t-1])\frac{\partial c[t]}{\partial h[t-1]}-\\
-          &diag(W_{x}x[t])\frac{\partial c}{\partial h[t-1]}\\
-          \frac{\partial c[t]}{\partial h[t-1]} = W_{h}diag&(\sigma(W_{c}x[t]+W_{h}h[t-1]))\odot(1-\sigma(W_{c}x[t]+W_{h}h[t-1]))
+          \frac{\partial \ell}{\partial W_x} = \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}&\left( (1-c[t]) \odot X +\sum_{i=1}^{t-1}\left( \prod_{j=i+1}^{t} \frac{\partial h[i]}{\partial h[i-1]} \right) [(1-c[t]) \odot X] \right)\\
+          X_j &= [0 \times (j - 1), x[t], 0, \ldots], X \in \mathbb{R}^{m \times (m \times n)}
         \end{flalign*}
+        Both the forward and backward passes use recurrences.
       \end{tcolorbox}
         \item  Can this network be subject to vanishing or exploding gradients?
         \begin{tcolorbox}
@@ -258,23 +257,78 @@ here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
         a[t]                 & = \text{softargmax}([w_0[t],w_1[t],w_2[t]]) \\
         h[t]                 & = \sum_{i=0}^{2}a_i[t]v_i[t]
       \end{flalign}
-where $x_i[t],h[t] \in \mathbb{R}^n$ and $Q_i, K_i, V_i \in \mathbb{R}^{n
+where $x[t],h[t] \in \mathbb{R}^n$ and $Q_i, K_i, V_i \in \mathbb{R}^{n
     \times n}.$ We define $h[t] = 0$ for $t < 1$. You may safely ignore base cases
 in the following.
 \begin{enumerate}
   \item Draw a diagram for this RNN.
+    \begin{tcolorbox}
+      \includegraphics[width=12cm]{"ann.png"}
+    \end{tcolorbox}
   \item What is the dimension of $a[t]$?
+  \begin{tcolorbox}
+    \begin{flalign*}
+      a[t] \in \mathbb{R}^{n}
+    \end{flalign*}
+  \end{tcolorbox}
   \item Extend this to AttentionRNN(k), a network that uses the last k state
         vectors h. Write out a system of equations that defines it.
-  \item Modify the above netork to produce AttentionRNN($\infty$), a network
+        \begin{tcolorbox}
+          Now define AttentionRNN($k$) as:
+          \begin{flalign*}
+        q_0[t],q_1[t], \ldots , q_k[t] & = Q_0x[t],Q_1h[t-1], \ldots , Q_{k}h[t-k]                \\
+        k_0[t],k_1[t], \ldots , k_k[t] & = K_0x[t],K_1h[t-1], \ldots , K_{k}h[t-k]               \\
+        v_0[t],v_1[t], \ldots , v_k[t] & = V_0x[t],V_1h[t-1], \ldots , V_{k}h[t-k]               \\
+        w_i[t]               & = q_i[t]^{T}k_i[t]                          \\
+        a[t]                 & = \text{softargmax}([w_0[t],w_1[t], \ldots, w_k[t]]) \\
+        h[t]                 & = \sum_{i=0}^{k}a_i[t]v_i[t]
+          \end{flalign*}
+        \end{tcolorbox}
+  \item Modify the above network to produce AttentionRNN($\infty$), a network
         that uses every past state vector. Write out a system of equations that defines
-        it.
+        it. We can do this by tying together some set of parameters, e.g. weight sharing.
+        \begin{tcolorbox}
+          Now define AttentionRNN($\infty$) as:
+          \begin{flalign*}
+        da fuk QQQQQQQQQQQQQQQDDDDAAAAAAAAAAAAAAAAAAAAAAAAAAAD
+          \end{flalign*}
+        \end{tcolorbox}
   \item Suppose the loss $\ell$ is computed, and we know the derivative
         $\frac{\partial \ell}{\partial h[i]}$ for all $i \geq t$. Write down expression
         for $\frac{\partial h[t]}{\partial h[t-1]}$ for AttentionRNN(2).
+        \begin{tcolorbox}
+          Diagonal matrices can be used to eliminate the Hadamard products.
+          \begin{flalign*}
+            h[t] &=  c[t]\odot h[t-1] + (1-c[t]) \odot W_{x}x[t]\\
+            dh[t] &= h[t-1] \odot dc[t] + c[t] \odot d(h[t-1])\\
+            &+ (1-c[t]) \odot d(W_{x}x[t]) + W_{x}x[t] \odot d(1-c[t])\\
+            &= diag(h[t-1])dc[t] + diag(c[t])dh[t-1] - diag(W_{x}x[t])dc[t]\\
+            &+diag(1-c[t])(dW_{x}x[t] + W_{x}[t]dx[t])
+          \end{flalign*}
+          Note $\frac{\partial W_x}{\partial h[t-1]} = \frac{\partial x[t]}{\partial h[t-1]} = 0$:
+          \begin{flalign*}
+            \frac{\partial h[t]}{\partial h[t-1]} &= diag(c[t])+diag(h[t-1])\frac{\partial c[t]}{\partial h[t-1]}-\\
+            &diag(W_{x}x[t])\frac{\partial c}{\partial h[t-1]}
+          \end{flalign*}
+          And note, as $\sigma'(x) = \sigma(x)(1-\sigma(x))$:
+          \begin{flalign*}
+            c[t] &=\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+            dc[t] &= \sigma(W_{c}x[t]+W_{h}h[t-1]) \odot (1-\sigma(W_{c}x[t]+W_{h}h[t-1]))\\
+            & \odot d[W_{c}x[t]+W_{h}h[t-1]]\\
+            &= diag[\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+            &\odot (1-\sigma(W_{c}x[t]+W_{h}h[t-1]))]d[W_{c}x[t]+W_{h}h[t-1]]\\
+            &\implies \frac{\partial c[t]}{\partial h[t-1]} = diag[\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+            &\odot(1-\sigma(W_{c}x[t]+W_{h}h[t-1])]W_h
+          \end{flalign*}
+        \end{tcolorbox}
   \item Suppose we know $\frac{\partial h[t]}{\partial h[T]}$ and
         $\frac{\partial \ell}{\partial h[t]} \forall t>T$. Write down expression for
         $\frac{\partial \ell}{\partial h[T]}$ for AttentionRNN(k).
+        \begin{tcolorbox}
+          \begin{flalign*}
+            \frac{\partial \ell}{\partial h[T]} = \frac{\partial \ell}{\partial h[t]}\frac{\partial h[t]}{\partial h[T]}
+          \end{flalign*}
+        \end{tcolorbox}
 \end{enumerate}
 
 \subsection*{Problem 1.4: Debugging Loss Curves}
@@ -283,7 +337,7 @@ in the following.
 \begin{enumerate}
   \item What causes the spikes on the left?
     \begin{tcolorbox}
-      Underparametrization of the model at that point in development.
+      Underparametrization of the model at that point in training.
     \end{tcolorbox}
   \item How can they be higher than the initial value of the loss?
     \begin{tcolorbox}
