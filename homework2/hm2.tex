@@ -337,7 +337,7 @@ in the following.
 \begin{enumerate}
   \item What causes the spikes on the left?
     \begin{tcolorbox}
-      Underparametrization of the model at that point in training.
+      Underparametrization of the model at that point in training. 
     \end{tcolorbox}
   \item How can they be higher than the initial value of the loss?
     \begin{tcolorbox}
@@ -345,7 +345,7 @@ in the following.
     \end{tcolorbox}
   \item What are some ways to fix them?
     \begin{tcolorbox}
-      We can select a more conservative learning rate, add regularization or dropout in the convolutional layers, increase the dataset size, normalize batches or increase either the batch size or number of layers.
+      We can select a more conservative learning rate or clip the gradient.
     \end{tcolorbox}
   \item Explain why the loss and accuracy are at these set values before
         training starts. You may need to check the task definition in the notebook.
