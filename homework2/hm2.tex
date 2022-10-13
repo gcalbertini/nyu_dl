@@ -288,9 +288,14 @@ in the following.
         that uses every past state vector. Write out a system of equations that defines
         it. We can do this by tying together some set of parameters, e.g. weight sharing.
         \begin{tcolorbox}
-          Now define AttentionRNN($\infty$) as:
+          Now define AttentionRNN($\infty$) as the following for $i \in [1, T]$:
           \begin{flalign*}
-        da fuk QQQQQQQQQQQQQQQDDDDAAAAAAAAAAAAAAAAAAAAAAAAAAAD
+            q_0[t], \ldots , q_i[t] & = Q_0x[t],Q_{i}h[t-i]                   \\
+            k_0[t], \ldots , k_i[t] & = K_0x[t],K_{i}h[t-i]                  \\
+            v_0[t], \ldots , v_i[t] & = V_0x[t],V_{i}h[t-i]                  \\
+            w_i[t]               & = q_i[t]^{T}k_i[t]                          \\
+            a[t]                 & = \text{softargmax}([w_0[t], \ldots, w_i[t]]) \\
+            h[t]                 & = \sum_{i=0}^{T}a_i[t]v_i[t]
           \end{flalign*}
         \end{tcolorbox}
   \item Suppose the loss $\ell$ is computed, and we know the derivative
