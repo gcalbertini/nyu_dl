@@ -1,0 +1,131 @@
+%This is my super simple Real Analysis Homework template
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,bm}
+\usepackage{minted}
+\usepackage[]{tcolorbox}
+\usepackage[]{amsthm} %lets us use \begin{proof}
+\usepackage[]{amssymb} %gives us the character \varnothing
+\usepackage{mathtools}
+\DeclareMathOperator{\sech}{sech}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\title{Homework 3}
+\author{Guilherme Albertini}
+\date\today
+%This information doesn't actually show up on your document unless you use the maketitle command below
+
+\begin{document}
+\maketitle %This command prints the title based on information entered above
+
+%Section and subsection automatically number unless you put the asterisk next to them.
+\section*{Theory}
+% References: 
+% https://distill.pub/2019/computing-receptive-fields/
+% https://arxiv.org/abs/1603.07285
+\subsection*{Problem 1.1: Energy Based Models Intuition}
+\begin{enumerate}
+	\item How do energy-based models allow for modeling situations where
+	      the
+	      mapping from input $x_i$ to output $y_i$ is not 1-to-1, but
+	      1-to-many?
+	      % https://deepai.org/machine-learning-glossary-and-terms/energy-based-models
+	      \begin{tcolorbox}
+		      We are mapping pairs $(x,y)$ to a scalar energy value
+		      and find that the most likely values of $y$ have a low
+		      $F(x,y)$. We then
+		      observe that, for each $x$, we can have several different
+		      values $y$ that have
+		      this low energy.\\
+		      Note a good definition from DeepAI: ``Energy-Based
+		      Models (EBMs) discover data dependencies by applying a
+		      measure of
+		      compatibility (scalar energy) to each configuration of
+		      the variables. For a model to make a prediction or
+		      decision (inference)
+		      it needs to set the value of observed variables to 1
+		      and finding values of the remaining variables that
+		      minimize that “energy”
+		      level.
+		      In the same way, machine learning consists of
+		      discovering an energy function that assigns low energies
+		      to the correct values
+		      of the remaining variables,
+		      and higher energies to the incorrect values. A
+		      so-called “loss functional,” that is minimized during
+		      training, is used to
+		      measure the quality of the energy functions. Within this
+		      framework, there are
+		      many energy functions and loss functionals allows
+		      available to design different
+		      probabilistic and non-probabilistic statistical
+		      models.''\\
+		      Words from Alf: ``We would like the energy function to
+		      be smooth and differentiable so that we can use it to
+		      perform the
+		      gradient-based method for inference. In order to perform
+		      inference, we search
+		      this function using gradient descent to find compatible
+		      y's. There are many
+		      alternate methods to gradient methods to obtain the
+		      minimum.''
+	      \end{tcolorbox}
+
+	\item How do energy-based models differ from models that output
+	      probabilities?
+	      \begin{tcolorbox}
+		      As is the key to their flexibility, we need not concern
+		      ourselves
+		      with normalization as EBMs output an unnormalized scalar
+		      (score) of $F(x,y)$ as
+		      opposed to conditional probabilities (i.e
+		      $\mathbb{P}(y|x)$ would later require
+		      an estimate of normalization).
+	      \end{tcolorbox}
+
+	\item How can you use energy function $F_{W}(x, y)$ to calculate a
+	      probability $\mathbb{P}(y|x)$?
+	      \begin{tcolorbox}
+		      We can view energies as unnormalised negative log
+		      probabilities, and use Gibbs-Boltzmann distribution to
+		      convert from energy to
+		      probability (with normalization and calibrated $\beta$):
+		      \begin{flalign*}
+			      \mathbb{P}(y|x)=\frac{\exp(-\beta
+				      F(x,y))}{\int_{y'}\exp(-\beta F(x,y'))}
+		      \end{flalign*}
+		      Note: $\beta$ is postive constant and larger values
+		      produce models with more variance whereas smoother ones
+		      are produced with
+		      smaller values.
+	      \end{tcolorbox}
+	\item What are the roles of the loss function and energy function?
+	      \begin{tcolorbox}
+		      The energy function is a measure of incompatibility
+		      between variables (for us, usually the input $x$ and output $y$) whereas the
+		      loss function is used to mold the energy function (we minimize loss to end up
+		      with a well-behaved energy function). Note that the cost is how far prediction
+		      $\hat{y}$ is from target $y$. As Yann mentions: A loss functional, minimized
+		      during learning, is used to measure the quality of the available energy
+		      functions. A distinction should be made between the energy function, which is
+		      minimized by the inference process, and the loss functional, which is minimized
+		      by the learning process.
+	      \end{tcolorbox}
+	
+	\item What problems can be caused by using only positive examples for energy (pushing down energy of correct inputs only)? How can it be avoided?
+	      \begin{tcolorbox}
+		      We may get a case of having energy be 0 everywhere,
+		      which is a valid minimization of the energy surface under this constraint. To avoid this degenerate case, we pull up negative examples by $-\nabla_{F(x,\hat{y})} = softargmin_{\beta}[F(x,Y)=0]^{T}\hat{y} \rightarrow \frac{1}{K}$ for K classes in the initial normal distribution and push down the positive examples by $-\nabla_{F(x,y)}$ of height 1 for sufficiently large $Y$ (Aside: $-\nabla_{F(x,y)}=-1+\frac{\exp(-\beta F(x,y))}{\sum_{y' \in Y} \exp(-\beta F(x,y'))}$) 
+	      \end{tcolorbox}
+	\item Briefly explain the three methods that can be used to shape the
+	      energy function.
+	      \begin{tcolorbox}
+		      ye
+	      \end{tcolorbox}
+	\item Provide an example of a loss function that uses negative examples.The format should be as follows `example(x, y,W) = FW (x, y).
+\end{enumerate}
+
+\end{document}
