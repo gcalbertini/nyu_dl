@@ -267,7 +267,7 @@ $\sigma(z)=\frac{1}{1+\exp(-z)}$.
           \item $w = a \star b$
         \end{enumerate}
         \includegraphics[width=15cm]{"diagram.jpg"}
-  \item Draw the graph of the following:
+  \item Draw the graph of the following (and its derivative):
         \begin{enumerate}
           \item ReLU()
                 \begin{tcolorbox}
@@ -277,6 +277,9 @@ $\sigma(z)=\frac{1}{1+\exp(-z)}$.
 def ReLU(x):
   data = [max(0, value) for value in x]
   return np.array(data, dtype=float)
+def der_ReLU(x):
+  data = [1 if value>0 else 0 for value in x]
+  return np.array(data, dtype=float)
                 \end{minted}
           \item LeakyReLU(neg slope is 0.01)
                 \begin{tcolorbox}
@@ -285,7 +288,10 @@ def ReLU(x):
                 \begin{minted}[]{python}
 def leaky_ReLU(x, slope):
     data = [max(slope*value, value) for value in x]
-    return np.array(data, dtype=float)                  
+    return np.array(data, dtype=float)  
+def der_leaky_ReLU(x, slope):
+    data = [1 if value>0 else slope for value in x]
+    return np.array(data, dtype=float)                
                 \end{minted}
           \item Softplus(beta is 1)
                 \begin{tcolorbox}
@@ -297,7 +303,12 @@ def softplus(x, beta):
     # B*x = log(1+exp(-B*x)) + B*x
     data = [(math.log(1+math.exp(-abs(value*beta))) +
              max(value*beta, 0))/beta for value in x]
-    return np.array(data, dtype=float)                  
+    return np.array(data, dtype=float) 
+def derv_softplus(x, beta):
+    # log(1+exp(-B*x)) + B*x -> dy/dx = (-B*exp(-B*x))/(1+exp(-B*x)) + B
+    data = [-math.exp(-(value*beta))/(1+math.exp(-(value*beta))) + 1
+              for value in x]
+    return np.array(data, dtype=float)                 
                 \end{minted}
           \item GELU
                 \begin{tcolorbox}
@@ -307,7 +318,11 @@ def softplus(x, beta):
 from math import erf
 def GELU(x):
     data = [0.5 * value * (1.0 + erf(value / np.sqrt(2.0))) for value in x]
-    return np.array(data, dtype=float)                  
+    return np.array(data, dtype=float)  
+def derv_GELU(x):
+    data = [0.5*(1+erf(value / np.sqrt(2.0)))+
+    value*math.exp((-value**2)/2)/np.sqrt(2*np.pi) for value in x]
+    return np.array(data, dtype=float)                
                 \end{minted}
         \end{enumerate}
   \item What are 4 different types of linear transformations? What is the
