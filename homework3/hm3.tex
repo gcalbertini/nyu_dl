@@ -9,6 +9,7 @@
 \usepackage[]{amsthm} %lets us use \begin{proof}
 \usepackage[]{amssymb} %gives us the character \varnothing
 \usepackage{mathtools}
+\usepackage{amssymb}
 \DeclareMathOperator{\sech}{sech}
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
@@ -418,12 +419,17 @@ format: $\ell_{example}(x,y,\bar{y},W)=F_W(x,y)$.
 	      examples have energy that are $m$ apart. The log loss is sometimes called a
 	      ``soft-hinge loss". Why? What is the advantage of using a soft-hinge loss?
 	      \begin{tcolorbox}
-		      By assuming a margin of 1, we notice the following:
-			   $$\log (\left(\exp(F_W(x,y)-F_W(x,\bar{y})+1) \right)) = F_W(x,y)-F_W(x,\bar{y})+1$$ 
-			   Thus to `soften' the hinge loss representation we took the log to arrive back at the 
-			   hinge loss. The soft-hinge loss stabilizes the exponential (hinge loss) 
-			   representation and is resilient to underflow. We also guarantee that the 
-			   output won't be at a vastly different scale than the input.
+		      By taking a margin of m, we notice the following:
+			  \begin{flalign*}
+				 \exp(F_W(x,y)-F_W(x,\bar{y})+m) \propto  (1+\exp(F_W(x,y)-F_W(x,\bar{y})))\\
+				\implies m \propto \log (1+\exp(F_W(x,y)-F_W(x,\bar{y}))) - (F_W(x,y)-F_W(x,\bar{y}))\\
+				\therefore m+F_W(x,y)-F_W(x,\bar{y}) \propto  \log (1+\exp(F_W(x,y)-F_W(x,\bar{y})))
+			  \end{flalign*}
+
+			   Thus we `soften' the exponential representation by using log to arrive at log loss, noting that it
+			   is proportional to hinge loss for this given margin. The soft-hinge loss stabilizes the exponential (hinge loss) 
+			   representation and is resilient to over/underflow. We also guarantee that the 
+			   output won't be at a vastly different scale than the input using the log.
 	      \end{tcolorbox}
 	\item How are the simple loss and square-square loss different
 	      from the hinge/log loss? In what situations would you use the simple loss, and
