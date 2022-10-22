@@ -241,8 +241,9 @@ $y$. We consider $n$ classes: $y \in \{1,\ldots,n\}$.
 					      F_W(x,y'))}\right)
 			      \\
 			                        & =\log \left(\int_{y'}
-			      \exp(-\beta F_W(x,y'))\right) + \beta F_W(x,y)
+			      \exp(-\beta F_W(x,y'))\right) -\log(\exp(-\beta F_W(x,y))
 			      \\
+				  & = \log \left(\int_{y'} \exp(-\beta F_W(x,y'))\right) +\beta F_W(x,y))\\
 			                        & \implies \frac{1}{\beta}\log
 			      \left(\int_{y'}
 			      \exp(-\beta F_W(x,y'))\right) +  F_W(x,y)
