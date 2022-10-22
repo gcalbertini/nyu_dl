@@ -137,9 +137,9 @@
 		      the length of the
 		      latent vector spanning the embedded model manifold's
 		      reconstructed
-		      $\tilde{y}=Wz$ to observed target $y$ from the data
-		      manifold) is 0, hence at
-		      the minimum energy by default. To avoid this degenerate
+		      $\tilde{y}=Wz$ to observed target $y$) is 0, hence at
+		      the minimum energy by default. To avoid this state of
+		      collapse
 		      case, we can augment $y
 			      = [1, y]^{T}$ to give an additional degree of
 		      freedom to dictionary $W=[1, W]^{T}$, so
@@ -151,20 +151,108 @@
 	      \end{tcolorbox}
 	\item Briefly explain the three methods that can be used to shape the
 	      energy function.
-		  % Summarizing from : https://atcold.github.io/pytorch-Deep-Learning/en/week08/08-2/
+	      % Summarizing from : https://atcold.github.io/pytorch-Deep-Learning/en/week08/08-2/
 	      \begin{tcolorbox}
 		      Regularization Methods: if the latent variable z is too
 		      expressive power in producing the final prediction
 		      $\tilde{y}$ then every true
 		      output $y$ will be a perfect reconstruction from input
 		      $x$ at the optimized
-		      latent $\check{z}$. We can then limit the volume of space of $z$ (say, with L1 loss to promote sparsity) and therby reduce the regions of $y$ with low energy, preventing the case of getting energy 0 everywhere.\\
-			  Contrastive Methods: Push down the energy of training data points, $F(X_i,Y_i)$, while pushing up energy on everywhere else, $F(X_i,Y')$.\\
-			  Architectural Methods: the manifold is of lower dimension than the ambient space so the data cannot be reconstructred perfectly. 
+		      latent $\check{z}$. We can then limit the volume of space
+		      of $z$ (say, with L1 loss to promote sparsity) and therby
+		      reduce the regions of
+		      $y$ with low energy, preventing the case of getting
+		      energy 0 everywhere.\\\\
+		      Contrastive Methods: Push down the energy of training
+		      data points, $F(X_i,Y_i)$, while pushing up energy on
+		      everywhere else,
+		      $F(X_i,Y')$.\\ \\
+		      Architectural Methods: The manifold is of lower
+		      dimension than the ambient space so the data cannot be
+		      reconstructred
+		      perfectly. Autoencoders can reduce the dimensionality of
+		      the input in the
+		      hidden layer (under-complete) and thus cannot reconstruct
+		      data perfectly,
+		      preventing collapse. If the hidden space is
+		      over-complete, we can use encoding
+		      with higher dimensionality than the input to make
+		      optimization easier.
 	      \end{tcolorbox}
 	\item Provide an example of a loss function that uses negative
-	      examples.The format should be as follows `example(x, y,W) = FW
-	      (x, y).
+	      examples.The format should be as follows $\ell_{example}(x, y, W)
+		      = F_{W}(x,y)$.
+	      \begin{tcolorbox}
+		      \begin{flalign*}
+			      \ell_{NLL}(x,y,W) & = -\log \left(
+			      \frac{\exp(-\beta F(x,y))}{\int_{y'} \exp(-\beta
+			      F(x,y'))}\right)                   \\
+		      \end{flalign*}
+	      \end{tcolorbox}
+	\item Say we have an energy function $F(x, y)$ with images $x$,
+	      classification for this image $y$. Write down the mathematical
+	      expression for
+	      doing inference given an input $x$. Now say we have a latent
+	      variable $z$, and
+	      our energy is $G(x, y, z)$. What is the expression for doing
+	      inference then?
+	      \begin{tcolorbox}
+		      \begin{flalign*}
+			      \check{y}            & = \arg \min_{y} {F(x,y)}
+			      \\
+			      \check{z}, \check{y} & = \arg \min_{y,z}
+			      {G(x,y,z)}
+		      \end{flalign*}
+	      \end{tcolorbox}
+\end{enumerate}
+
+\subsection*{Problem 1.2: Negative log-likelihood loss}
+Let's consider an energy-based model we are training to do classification of
+input between $n$ classes. $F_W(x, y)$ is the energy of input $x$ and class
+$y$. We consider $n$ classes: $y \in \{1,\ldots,n\}$.
+\begin{enumerate}
+	\item For a given input $x$, write down an expression for a Gibbs
+	      distribution over labels $y$ that this energy-based model
+	      specifies. Use
+	      $\beta$ for the constant multiplier.
+		  \begin{tcolorbox}
+			\begin{flalign*}
+				F_{\beta}(x,y)=-\frac{1}{\beta} \log \int_{z} \exp(-\beta G(x,y,z))
+			\end{flalign*}
+		  \end{tcolorbox}
+	\item Let's say for a particular data sample $x$, we have the label
+	      $y$. Give the
+	      expression for the negative log likelihood loss, i.e. negative
+	      log
+	      likelihood
+	      of the correct label (show step-by-step derivation of the loss
+	      function
+	      from
+	      the expression of the previous subproblem). For easier
+	      calculations in
+	      the
+	      following subproblem, multiply the loss by $\frac{1}{\beta}$.
+	      \begin{tcolorbox}
+		      \begin{flalign*}
+			      \ell_{NLL}(x,y,W) & = -\log \left(
+			      \frac{\exp(-\beta
+					      F_W(x,y))}{\int_{y'} \exp(-\beta
+					      F_W(x,y'))}\right)
+			      \\
+			                        & =\log \left(\int_{y'}
+			      \exp(-\beta F_W(x,y'))\right) + \beta F_W(x,y)\\
+				  &\implies \frac{1}{\beta}\log \left(\int_{y'}
+			      \exp(-\beta F_W(x,y'))\right) +  F_W(x,y)
+		      \end{flalign*}
+			  Where the last step was from dividing by $\beta$.
+	      \end{tcolorbox}
+	\item Now, derive the gradient of that expression with respect to $W$ (just providing the final expression is not enough). Why can it be intractable to compute it, and how can we get around the intractability?
+		\begin{tcolorbox}
+			\begin{flalign*}
+				ya
+			\end{flalign*}
+		\end{tcolorbox}
+
 \end{enumerate}
 
 \end{document}
