@@ -304,7 +304,8 @@ $y$. We consider $n$ classes: $y \in \{1,\ldots,n\}$.
 	      discrete y because there's no distance measure between different
 	      classes).
 	      \begin{tcolorbox}
-		      NLL pulls all negative examples up with force proportional
+		      NLL pulls all negative examples up with force
+		      proportional
 		      to the probability of the $y'$ in question (see Energy
 		      Classification slides).
 		      This is not a distance metric so proximity of two
@@ -332,20 +333,29 @@ format: $\ell_{example}(x,y,\bar{y},W)=F_W(x,y)$.
 	      \begin{tcolorbox}
 		      \begin{flalign*}
 			      \frac{\partial [F_W(x,y)]^{+}] + [m -
-			      F_{W}(x,\bar{y})]^{+}}{\partial W}          & = \frac{\partial [F_W(x,y)]^{+}]}{\partial
-			      W} + \frac{[m - F_{W}(x,\bar{y})]^{+}}{\partial W}                                       \\
+			      F_{W}(x,\bar{y})]^{+}}{\partial W}          & =
+			      \frac{\partial [F_W(x,y)]^{+}]}{\partial
+				      W} + \frac{[m - F_{W}(x,\bar{y})]^{+}}{\partial
+			      W}                                              \\
 			      \frac{\partial [F_W(x,y)]^{+}]}{\partial W} & =
 			      \begin{cases}
-				      \frac{\partial F_W(x,y)}{\partial W} & \text{if
-				      } F_W(x,y) > 0                                           \\
-				      0                                    & \text{otherwise }
-			      \end{cases}                                          \\
-			      \frac{\partial [m - F_{W}(x,\bar{y})]^{+}}{\partial W}
+				      \frac{\partial F_W(x,y)}{\partial W} &
+				      \text{if
+				      } F_W(x,y) > 0
+				      \\
+				      0                                    &
+				      \text{otherwise }
+			      \end{cases}
+			      \\
+			      \frac{\partial [m -
+					      F_{W}(x,\bar{y})]^{+}}{\partial W}
 			                                                  & =
 			      \begin{cases}
 				      \frac{-\partial
-				      F_W(x,\bar{y})}{\partial W} & \text{if } F_W(x,\bar{y}) < m \\
-				      0                           & \text{otherwise }
+				      F_W(x,\bar{y})}{\partial W} & \text{if }
+				      F_W(x,\bar{y}) < m                       \\
+				      0                           &
+				      \text{otherwise }
 			      \end{cases}
 		      \end{flalign*}\\
 	      \end{tcolorbox}
@@ -353,14 +363,17 @@ format: $\ell_{example}(x,y,\bar{y},W)=F_W(x,y)$.
 	      \begin{tcolorbox}
 		      \begin{flalign*}
 			      \frac{\partial
-			      \log(1+\exp(F_W(x,y)-F_W(x,\bar{y})))}{\partial W} = \\
+				      \log(1+\exp(F_W(x,y)-F_W(x,\bar{y})))}{\partial
+			      W} = \\
 			      \frac{\left(
 				      \exp(F_W(x,y)-F_W(x,\bar{y}))\right)\left(\frac{\partial F_W(x,y)}{\partial W}
 				      - \frac{\partial F_W(x,\bar{y})}{\partial
-			      W}\right)}{1+\exp(F_W(x,y)-F_W(x,\bar{y}))}          \\
+					      W}\right)}{1+\exp(F_W(x,y)-F_W(x,\bar{y}))}
+			      \\
 			      =\frac{\exp(F_W(x,y))\left(\frac{\partial
-					      F_W(x,y)}{\partial W} - \frac{\partial F_W(x,\bar{y})}{\partial
-			      W}\right)}{\exp(F_W(x,y))+\exp(F_W(x,\bar{y}))}      \\
+					      F_W(x,y)}{\partial W} -
+				      \frac{\partial F_W(x,\bar{y})}{\partial
+					      W}\right)}{\exp(F_W(x,y))+\exp(F_W(x,\bar{y}))}
 		      \end{flalign*}
 	      \end{tcolorbox}
 	\item Derive the gradient of square-loss with respect to $W$.
@@ -369,36 +382,61 @@ format: $\ell_{example}(x,y,\bar{y},W)=F_W(x,y)$.
 			      \frac{\partial [(F_W(x,y))^{+})^2 +
 			      ((m-F_W(x,\bar{y}))^{+})^2]}{\partial W} = \\
 			      \frac{\partial (F_W(x,y)^{+})^2}{\partial W} +
-			      \frac{\partial ((m-F_W(x,\bar{y}))^{+})^2}{\partial W}
+			      \frac{\partial
+				      ((m-F_W(x,\bar{y}))^{+})^2}{\partial W}
 		      \end{flalign*}
 		      \begin{flalign*}
-			      \frac{\partial (F_W(x,y))^{+})^2}{\partial W} &=
+			      \frac{\partial (F_W(x,y))^{+})^2}{\partial W} & =
 			      \begin{cases}
 				      2F_W(x,y)\frac{\partial
-				      F_W(x,y)}{\partial W} & \text{if } F_W(x,y) > 0 \\
+				      F_W(x,y)}{\partial W} & \text{if }
+				      F_W(x,y) > 0                              \\
 				      0                     & \text{otherwise }
-			      \end{cases} \\
+			      \end{cases}                \\
 			      \frac{\partial
-				      ((m-F_W(x,\bar{y}))^{+})^2}{\partial W} &=
+				      ((m-F_W(x,\bar{y}))^{+})^2}{\partial W}
+			                                                    & =
 			      \begin{cases}
 				      -2(m-F_W(x,\bar{y}))\frac{\partial
-				      F_W(x,\bar{y})}{\partial W} & \text{if } F_W(x,\bar{y}) < m \\
-				      0                           & \text{otherwise }
+				      F_W(x,\bar{y})}{\partial W} & \text{if }
+				      F_W(x,\bar{y}) < m                       \\
+				      0                           &
+				      \text{otherwise }
 			      \end{cases}
 		      \end{flalign*}
 	      \end{tcolorbox}
-		\item Explain how NLL loss is different from the three losses above.
-		  \begin{tcolorbox}
-			NLL loss can be applied in the continuous case, in which it can prove an intractable calculation. Also note that NLL loss pulls up on all negative examples at a time. 
-		  \end{tcolorbox}
-		\item The hinge loss $[F_W(x, y)- F_W (x, \bar{y}) + m]^{+}$ has a margin parameter $m$, which gives 0 loss when the positive and negative examples have energy that are $m$ apart. The log loss is sometimes called a soft-hinge loss. Why? What is the advantage of using a soft hinge loss?
-		  \begin{tcolorbox}
-			a
-		  \end{tcolorbox}
-		\item How are the simple loss and square-square loss different from the hinge/log loss? In what situations would you use the simple loss, and in what situations would you use the square-square loss?
-		  \begin{tcolorbox}
-			b
-		  \end{tcolorbox}
+	\item Explain how NLL loss is different from the three losses
+	      above.
+	      \begin{tcolorbox}
+		      NLL loss can be applied in the continuous case, in
+		      which it can prove an intractable calculation. Also note that NLL loss pulls up
+		      on all negative examples at a time.
+	      \end{tcolorbox}
+	\item The hinge loss $[F_W(x, y)- F_W (x, \bar{y}) + m]^{+}$
+	      has a margin parameter $m$, which gives 0 loss when the positive and negative
+	      examples have energy that are $m$ apart. The log loss is sometimes called a
+	      ``soft-hinge loss". Why? What is the advantage of using a soft-hinge loss?
+	      \begin{tcolorbox}
+		      By assuming a margin of 1, we notice the following:
+			   $$\log (\left(\exp(F_W(x,y)-F_W(x,\bar{y})+1) \right)) = F_W(x,y)-F_W(x,\bar{y})+1$$ 
+			   Thus to `soften' the hinge loss representation we took the log to arrive back at the 
+			   hinge loss. The soft-hinge loss stabilizes the exponential (hinge loss) 
+			   representation and is resilient to underflow. We also guarantee that the 
+			   output won't be at a vastly different scale than the input.
+	      \end{tcolorbox}
+	\item How are the simple loss and square-square loss different
+	      from the hinge/log loss? In what situations would you use the simple loss, and
+	      in what situations would you use the square-square loss?
+	      \begin{tcolorbox}
+		      Square-square loss pushes the positive examples' energy
+		      towards 0 and pulls negative examples' energy away from 0 quadratically,
+		      whereas simple loss does this linearly. In comparison, hinge/log loss concerns
+		      itself with the difference in energy between the positive and negative
+		      examples. Hinge loss' positive examples may have lower energy than those of negative by at
+		      least the margin $m$ so it may not produce energy of 0. Use
+		      simple loss if the model does not need to be sensitive to outliers we come
+		      across and use square-square loss if it does.
+	      \end{tcolorbox}
 \end{enumerate}
 
 \end{document}
