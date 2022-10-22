@@ -215,11 +215,12 @@ $y$. We consider $n$ classes: $y \in \{1,\ldots,n\}$.
 	      distribution over labels $y$ that this energy-based model
 	      specifies. Use
 	      $\beta$ for the constant multiplier.
-		  \begin{tcolorbox}
-			\begin{flalign*}
-				F_{\beta}(x,y)=-\frac{1}{\beta} \log \int_{z} \exp(-\beta G(x,y,z))
-			\end{flalign*}
-		  \end{tcolorbox}
+	      \begin{tcolorbox}
+		      \begin{flalign*}
+			      F_{\beta}(x,y)=-\frac{1}{\beta} \log \int_{z}
+			      \exp(-\beta G(x,y,z))
+		      \end{flalign*}
+	      \end{tcolorbox}
 	\item Let's say for a particular data sample $x$, we have the label
 	      $y$. Give the
 	      expression for the negative log likelihood loss, i.e. negative
@@ -240,19 +241,164 @@ $y$. We consider $n$ classes: $y \in \{1,\ldots,n\}$.
 					      F_W(x,y'))}\right)
 			      \\
 			                        & =\log \left(\int_{y'}
-			      \exp(-\beta F_W(x,y'))\right) + \beta F_W(x,y)\\
-				  &\implies \frac{1}{\beta}\log \left(\int_{y'}
+			      \exp(-\beta F_W(x,y'))\right) + \beta F_W(x,y)
+			      \\
+			                        & \implies \frac{1}{\beta}\log
+			      \left(\int_{y'}
 			      \exp(-\beta F_W(x,y'))\right) +  F_W(x,y)
 		      \end{flalign*}
-			  Where the last step was from dividing by $\beta$.
+		      Where the last step was from dividing by $\beta$.
 	      \end{tcolorbox}
-	\item Now, derive the gradient of that expression with respect to $W$ (just providing the final expression is not enough). Why can it be intractable to compute it, and how can we get around the intractability?
-		\begin{tcolorbox}
-			\begin{flalign*}
-				ya
-			\end{flalign*}
-		\end{tcolorbox}
+	\item Now, derive the gradient of that expression with respect to $W$
+	      (just providing the final expression is not enough). Why can it
+	      be intractable
+	      to compute it, and how can we get around the intractability?
+	      \begin{tcolorbox}
+		      \begin{flalign*}
+			      \frac{\partial \ell_NLL(x,y,W)}{\partial W} & =
+			      \frac{\partial F_W(x,y)}{\partial W} +
+			      \frac{1}{\beta} \frac{\partial \log
+				      \int_{y'} \exp(-\beta
+				      F_W(x,y'))}{\partial W}
+			      \\
+			                                                  & =
+			      \frac{\partial F_W(x,y)}{\partial W} +
+			      \frac{1}{\beta}\frac{\frac{\partial \int_{y'}
+					      \exp(-\beta F_W(x,y'))}{\partial
+					      W}}{\int_{y'}\exp(-\beta
+				      F_W(x,y'))}
+			      \\
+			      = \frac{\partial F_W(x,y)}{\partial W}      & +
+			      \frac{1}{\beta}\frac{1}{\int_{y'}\exp(-\beta
+				      F_W(x,y'))}\int_{y'} -\beta
+			      \exp(-\beta F_W(x,y')) \frac{\partial
+				      F_W(x,y')}{\partial W}
+			      \\
+			      =\frac{\partial F_W(x,y)}{\partial W}
+			                                                  &
+			      -\int_{y'} \frac{\exp(-\beta
+				      F_W(x,y')}{\int_{y''} \exp(-\beta F(x,
+				      y''))}\frac{\partial F(x,y')}{\partial W}
+			      \\
+			                                                  & =
+			      \frac{\partial F_W(x,y)}{\partial W} -
+			      \int_{y'} \mathbb{P}(y'|x)\frac{\partial
+				      F_W(x,y')}{\partial W}
+		      \end{flalign*}
+		      It may be intractable to compute the integral term over
+		      all $y' \in Y$; we can get around this by perhaps by
+		      applying Markov chain
+		      Monte Carlo (MCMC) methods, sequential Monte Carlo (SMC)
+		      methods, importance
+		      sampling, or the forward-backward algorithm.
+	      \end{tcolorbox}
+	\item Explain why negative log-likelihood loss pushes the energy of the
+	      correct example to negative infinity, and all others to positive
+	      infinity, no
+	      matter how close the two examples are, resulting in an energy
+	      surface
+	      with
+	      really sharp edges in case of continuous $y$ (this is usually not
+	      an
+	      issue for
+	      discrete y because there's no distance measure between different
+	      classes).
+	      \begin{tcolorbox}
+		      NLL pulls all negative examples up with force proportional
+		      to the probability of the $y'$ in question (see Energy
+		      Classification slides).
+		      This is not a distance metric so proximity of two
+		      examples is irrelevant. For
+		      the continuous case, this force remains the same
+		      regardless of proximity of
+		      examples so we end up with sharp edges over the energy
+		      surface.
+	      \end{tcolorbox}
 
+\end{enumerate}
+
+\subsection*{Problem 1.3 Comparing Contrastive Loss Functions}
+In this problem, we're going to compare a few contrastive loss functions. We
+are
+going to look at the behavior of the gradients, and understand what uses each
+loss function has. In the following subproblems, $m$ is a margin, $m \in
+	\mathbb{R}$, $x$ is input, $y$ is correct label and $\bar{y}$ is the
+incorrect label. Define loss in the following
+format: $\ell_{example}(x,y,\bar{y},W)=F_W(x,y)$.
+
+\begin{enumerate}
+	\item Derive the gradient of the simple loss function with respect to
+	      $W$.
+	      \begin{tcolorbox}
+		      \begin{flalign*}
+			      \frac{\partial [F_W(x,y)]^{+}] + [m -
+			      F_{W}(x,\bar{y})]^{+}}{\partial W}          & = \frac{\partial [F_W(x,y)]^{+}]}{\partial
+			      W} + \frac{[m - F_{W}(x,\bar{y})]^{+}}{\partial W}                                       \\
+			      \frac{\partial [F_W(x,y)]^{+}]}{\partial W} & =
+			      \begin{cases}
+				      \frac{\partial F_W(x,y)}{\partial W} & \text{if
+				      } F_W(x,y) > 0                                           \\
+				      0                                    & \text{otherwise }
+			      \end{cases}                                          \\
+			      \frac{\partial [m - F_{W}(x,\bar{y})]^{+}}{\partial W}
+			                                                  & =
+			      \begin{cases}
+				      \frac{-\partial
+				      F_W(x,\bar{y})}{\partial W} & \text{if } F_W(x,\bar{y}) < m \\
+				      0                           & \text{otherwise }
+			      \end{cases}
+		      \end{flalign*}\\
+	      \end{tcolorbox}
+	\item Derive the gradient of the log loss function with respect to $W$.
+	      \begin{tcolorbox}
+		      \begin{flalign*}
+			      \frac{\partial
+			      \log(1+\exp(F_W(x,y)-F_W(x,\bar{y})))}{\partial W} = \\
+			      \frac{\left(
+				      \exp(F_W(x,y)-F_W(x,\bar{y}))\right)\left(\frac{\partial F_W(x,y)}{\partial W}
+				      - \frac{\partial F_W(x,\bar{y})}{\partial
+			      W}\right)}{1+\exp(F_W(x,y)-F_W(x,\bar{y}))}          \\
+			      =\frac{\exp(F_W(x,y))\left(\frac{\partial
+					      F_W(x,y)}{\partial W} - \frac{\partial F_W(x,\bar{y})}{\partial
+			      W}\right)}{\exp(F_W(x,y))+\exp(F_W(x,\bar{y}))}      \\
+		      \end{flalign*}
+	      \end{tcolorbox}
+	\item Derive the gradient of square-loss with respect to $W$.
+	      \begin{tcolorbox}
+		      \begin{flalign*}
+			      \frac{\partial [(F_W(x,y))^{+})^2 +
+			      ((m-F_W(x,\bar{y}))^{+})^2]}{\partial W} = \\
+			      \frac{\partial (F_W(x,y)^{+})^2}{\partial W} +
+			      \frac{\partial ((m-F_W(x,\bar{y}))^{+})^2}{\partial W}
+		      \end{flalign*}
+		      \begin{flalign*}
+			      \frac{\partial (F_W(x,y))^{+})^2}{\partial W} &=
+			      \begin{cases}
+				      2F_W(x,y)\frac{\partial
+				      F_W(x,y)}{\partial W} & \text{if } F_W(x,y) > 0 \\
+				      0                     & \text{otherwise }
+			      \end{cases} \\
+			      \frac{\partial
+				      ((m-F_W(x,\bar{y}))^{+})^2}{\partial W} &=
+			      \begin{cases}
+				      -2(m-F_W(x,\bar{y}))\frac{\partial
+				      F_W(x,\bar{y})}{\partial W} & \text{if } F_W(x,\bar{y}) < m \\
+				      0                           & \text{otherwise }
+			      \end{cases}
+		      \end{flalign*}
+	      \end{tcolorbox}
+		\item Explain how NLL loss is different from the three losses above.
+		  \begin{tcolorbox}
+			NLL loss can be applied in the continuous case, in which it can prove an intractable calculation. Also note that NLL loss pulls up on all negative examples at a time. 
+		  \end{tcolorbox}
+		\item The hinge loss $[F_W(x, y)- F_W (x, \bar{y}) + m]^{+}$ has a margin parameter $m$, which gives 0 loss when the positive and negative examples have energy that are $m$ apart. The log loss is sometimes called a soft-hinge loss. Why? What is the advantage of using a soft hinge loss?
+		  \begin{tcolorbox}
+			a
+		  \end{tcolorbox}
+		\item How are the simple loss and square-square loss different from the hinge/log loss? In what situations would you use the simple loss, and in what situations would you use the square-square loss?
+		  \begin{tcolorbox}
+			b
+		  \end{tcolorbox}
 \end{enumerate}
 
 \end{document}
