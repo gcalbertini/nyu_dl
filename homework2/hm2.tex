@@ -240,6 +240,31 @@ here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
         \end{flalign*}
         Both the forward and backward passes use recurrences.
       \end{tcolorbox}
+      \begin{tcolorbox}
+        Aside: Diagonal matrices can eliminate Hadamard products.
+        \begin{flalign*}
+          h[t] &=  c[t]\odot h[t-1] + (1-c[t]) \odot W_{x}x[t]\\
+          dh[t] &= h[t-1] \odot dc[t] + c[t] \odot d(h[t-1])\\
+          &+ (1-c[t]) \odot d(W_{x}x[t]) + W_{x}x[t] \odot d(1-c[t])\\
+          &= diag(h[t-1])dc[t] + diag(c[t])dh[t-1] - diag(W_{x}x[t])dc[t]\\
+          &+diag(1-c[t])(dW_{x}x[t] + W_{x}[t]dx[t])
+        \end{flalign*}
+        Note $\frac{\partial W_x}{\partial h[t-1]} = \frac{\partial x[t]}{\partial h[t-1]} = 0$:
+        \begin{flalign*}
+          \frac{\partial h[t]}{\partial h[t-1]} &= diag(c[t])+diag(h[t-1])\frac{\partial c[t]}{\partial h[t-1]}-\\
+          &diag(W_{x}x[t])\frac{\partial c}{\partial h[t-1]}
+        \end{flalign*}
+        And note, as $\sigma'(x) = \sigma(x)(1-\sigma(x))$:
+        \begin{flalign*}
+          c[t] &=\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+          dc[t] &= \sigma(W_{c}x[t]+W_{h}h[t-1]) \odot (1-\sigma(W_{c}x[t]+W_{h}h[t-1]))\\
+          & \odot d[W_{c}x[t]+W_{h}h[t-1]]\\
+          &= diag[\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+          &\odot (1-\sigma(W_{c}x[t]+W_{h}h[t-1]))]d[W_{c}x[t]+W_{h}h[t-1]]\\
+          &\implies \frac{\partial c[t]}{\partial h[t-1]} = diag[\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+          &\odot(1-\sigma(W_{c}x[t]+W_{h}h[t-1])]W_h
+        \end{flalign*}
+      \end{tcolorbox}
         \item  Can this network be subject to vanishing or exploding gradients?
         \begin{tcolorbox}
           The vector $h[t]$ is not being multiplied by matrices throughout timesteps so will not have exploding gradients. It can vanishing gradients as the element-wise multiplication of values of $h[t]$ and $c[t]$ are between 0 and 1.
@@ -290,40 +315,39 @@ in the following.
         \begin{tcolorbox}
           Now define AttentionRNN($\infty$) as the following for $i \in [1, T]$:
           \begin{flalign*}
-            q_0[t], \ldots , q_i[t] & = Q_0x[t],Q_{i}h[t-i]                   \\
-            k_0[t], \ldots , k_i[t] & = K_0x[t],K_{i}h[t-i]                  \\
-            v_0[t], \ldots , v_i[t] & = V_0x[t],V_{i}h[t-i]                  \\
-            w_i[t]               & = q_i[t]^{T}k_i[t]                          \\
-            a[t]                 & = \text{softargmax}([w_0[t], \ldots, w_i[t]]) \\
-            h[t]                 & = \sum_{i=0}^{T}a_i[t]v_i[t]
+            q_0[t], \ldots , q_i[t] & = Q_0x[t],Q_{i}h[t-i], \ldots, Q_{i}h[1]                   \\
+            k_0[t], \ldots , k_i[t] & = K_0x[t],K_{i}h[t-i] \ldots, K_{i}h[1]                 \\
+            v_0[t], \ldots , v_i[t] & = V_0x[t],V_{i}h[t-i] \ldots, V_{i}h[1]               \\
+            w_i[t]               & = q_i[t]^{T}k_{i}[t]                          \\
+            a[t]                 & = \text{softargmax}([w_0[t], \ldots, w_{t-1}[t]]) \\
+            h[t]                 & = \sum_{i=0}^{t-1}a_i[t]v_i[t]
           \end{flalign*}
         \end{tcolorbox}
   \item Suppose the loss $\ell$ is computed, and we know the derivative
         $\frac{\partial \ell}{\partial h[i]}$ for all $i \geq t$. Write down expression
         for $\frac{\partial h[t]}{\partial h[t-1]}$ for AttentionRNN(2).
         \begin{tcolorbox}
-          Diagonal matrices can be used to eliminate the Hadamard products.
+          $\frac{\partial h[t]}{\partial h[t-1]}$ with $h[t] = \sum_{i=1}^{2}a_i[t]v_i[t]$ has $h[t] = a_0[t]v_0[t]+a_1[t]v_1[t]+a_2[t]v_2[t]$. Accordingly, only $q_1, v_1, k_1$ depend on $h[t-1]$.
           \begin{flalign*}
-            h[t] &=  c[t]\odot h[t-1] + (1-c[t]) \odot W_{x}x[t]\\
-            dh[t] &= h[t-1] \odot dc[t] + c[t] \odot d(h[t-1])\\
-            &+ (1-c[t]) \odot d(W_{x}x[t]) + W_{x}x[t] \odot d(1-c[t])\\
-            &= diag(h[t-1])dc[t] + diag(c[t])dh[t-1] - diag(W_{x}x[t])dc[t]\\
-            &+diag(1-c[t])(dW_{x}x[t] + W_{x}[t]dx[t])
+            a_0[t] &= \frac{\exp(q_0[t]^{T}k_0[t])}{\sum_{i=0}^{2}\exp(q_i[t]^{T}k_i[t])}\\
+            a_1[t] &= \frac{\exp(q_1[t]^{T}k_1[t])}{\sum_{i=0}^{2}\exp(q_i[t]^{T}k_i[t])}\\
+            a_2[t] &= \frac{\exp(q_2[t]^{T}k_2[t])}{\sum_{i=0}^{2}\exp(q_i[t]^{T}k_i[t])}\\
+            v_0[t] &= V_0x[t]\\
+            v_1[t] &= V_1h[t-1]\\
+            v_2[t] &= V_2h[t-2]\\
+            \frac{\partial h[t]}{\partial h[t-1]} &= \left( \frac{\partial a_0[t]v_0[t]}{\partial h[t-1]}, \frac{\partial a_1[t]v_1[t]}{\partial h[t-1]}, \frac{\partial a_2[t]v_2[t]}{\partial h[t-1]} \right)\\
+            \frac{\partial a_0[t]v_0[t]}{\partial h[t-1]} &= v_0[t]\frac{-\partial Z}{Z^2} = \frac{-v_0[t]}{Z^2}\partial(\exp(q_1[t]^{T}k_1{t}))\\
+            &= \frac{-v_0[t]}{Z^2}(k_1Q_q+{q_{1}}^{T}k_1[t])\\
+            &= -v_0[t](k_1Q_q+q_1^TK_1)\frac{\exp(q_1[t]^Tk_1[t])}{\sum_{i=1}^{2}\exp(q_i[t]^Tk_i[t])^2}\\
+            \frac{\partial a_2[t]v_2[t]}{\partial h[t-1]} &= -v_2[t](k_1Q_q+q_1^TK_1)\frac{\exp(q_1[t]^Tk_1[t])}{\sum_{i=1}^{2}\exp(q_i[t]^Tk_i[t])^2}\\
+            \frac{\partial a_1[t]v_1[t]}{\partial h[t-1]} &= v_1[t]\frac{\partial a_1[t]}{\partial h[t-1]} +a_1[t]\frac{\partial v_1[t]}{\partial h[t-1]}\\
+            &= \frac{\partial \exp(q_1[t]^Tk_1[t])}Z{} - \exp(q_1[t]^Tk_1[t])\frac{\partial Z}{Z^2}\\
+            &=\frac{(k_1Q_1+q_1^TK_q)\exp(q_1[t]^Tk_1[t]) }{Z} \\
+            &-\exp(q_1[t]^Tk_1[t])(k_1Q_q+q_1^TK_1)\frac{\exp(q_1[t]^Tk_1[t])}{\sum_i=0}^{2} \exp(q_i[t]^Tk_i[t])
           \end{flalign*}
-          Note $\frac{\partial W_x}{\partial h[t-1]} = \frac{\partial x[t]}{\partial h[t-1]} = 0$:
+          And so,\
           \begin{flalign*}
-            \frac{\partial h[t]}{\partial h[t-1]} &= diag(c[t])+diag(h[t-1])\frac{\partial c[t]}{\partial h[t-1]}-\\
-            &diag(W_{x}x[t])\frac{\partial c}{\partial h[t-1]}
-          \end{flalign*}
-          And note, as $\sigma'(x) = \sigma(x)(1-\sigma(x))$:
-          \begin{flalign*}
-            c[t] &=\sigma(W_{c}x[t]+W_{h}h[t-1])\\
-            dc[t] &= \sigma(W_{c}x[t]+W_{h}h[t-1]) \odot (1-\sigma(W_{c}x[t]+W_{h}h[t-1]))\\
-            & \odot d[W_{c}x[t]+W_{h}h[t-1]]\\
-            &= diag[\sigma(W_{c}x[t]+W_{h}h[t-1])\\
-            &\odot (1-\sigma(W_{c}x[t]+W_{h}h[t-1]))]d[W_{c}x[t]+W_{h}h[t-1]]\\
-            &\implies \frac{\partial c[t]}{\partial h[t-1]} = diag[\sigma(W_{c}x[t]+W_{h}h[t-1])\\
-            &\odot(1-\sigma(W_{c}x[t]+W_{h}h[t-1])]W_h
+            \frac{\partial h[t]}{\partial h[t-1]} = \frac{\partial a_0[t]v_0[t]}{\partial h[t-1]} + \frac{\partial a_2[t]v_2[t]}{\partial h[t-1]} +v_1[t]\frac{\partial a_1[t]}{\partial h[t-1]} +a_1[t]\frac{\partial v_1[t]}{\partial h[t-1]}
           \end{flalign*}
         \end{tcolorbox}
   \item Suppose we know $\frac{\partial h[t]}{\partial h[T]}$ and
@@ -331,7 +355,7 @@ in the following.
         $\frac{\partial \ell}{\partial h[T]}$ for AttentionRNN(k).
         \begin{tcolorbox}
           \begin{flalign*}
-            \frac{\partial \ell}{\partial h[T]} = \frac{\partial \ell}{\partial h[t]}\frac{\partial h[t]}{\partial h[T]}
+            \frac{\partial \ell}{\partial h[T]} = \sum_{i=1}^k\frac{\partial \ell}{\partial h[T+i]}\frac{\partial h[T+i]}{\partial h[T]}
           \end{flalign*}
         \end{tcolorbox}
 \end{enumerate}
