@@ -83,7 +83,7 @@ def gradient_descent(input, model, loss, iterations=256):
         # thus remove tree history from previous iterations (from earlier scales or gradient updates)
         current_pixels = current_pixels.detach().requires_grad_(True)
 
-        optimizer = torch.optim.Adam([current_pixels], lr=0.05, weight_decay=1e-4)
+        optimizer = torch.optim.Adam([current_pixels], lr=0.08, weight_decay=1e-4)
 
         # with 4 scales, get 64 iterations
         for _ in tqdm(range(iterations // scales), desc=f"Scale {scale+1}/{scales}"):
