@@ -27,7 +27,11 @@ def main():
         image = (image * 8 + 128) / 255  # background color = 128,128,128
         image = image.permute(0, 3, 1, 2)
         image.requires_grad_()
-        image = gradient_descent(image, model, lambda tensor: tensor[0, label].mean(),)
+        image = gradient_descent(
+            image,
+            model,
+            lambda tensor: tensor[0, label].mean(),
+        )
         save_img(image, f"./img_{label}.jpg")
         out = model(image)
         print(f"ANSWER_FOR_LABEL_{label}: {out.softmax(1)[0, label].item()}")
@@ -46,7 +50,19 @@ def normalize_and_jitter(img, step=32):
 
 
 def gradient_descent(input, model, loss, iterations=256):
-    return input  # IMPLEMENT ME
+    input = normalize_and_jitter(input)
+    input = torch.nn.Parameter(input)
+    lr = 0.01
+    for _ in range(iterations):
+        x = model(input)
+        l = loss(x)
+
+        l.backward()
+
+        input.data = input.data + lr * input.grad.data
+        input.grad.data.zero_()
+        
+    return input
 
 
 def forward_and_return_activation(model, input, module):
