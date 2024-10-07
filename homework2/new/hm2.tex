@@ -1,0 +1,451 @@
+%This is my super simple Real Analysis Homework template
+
+\documentclass{article}
+
+% Setting
+\usepackage{fouriernc}
+\usepackage[T1]{fontenc}
+
+% Formatting
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+
+% Text
+
+% Math
+\usepackage{mathtools, amssymb, bm, amsthm, amsthm}
+\usepackage{bbm}
+% original mathcal
+\DeclareMathAlphabet{\mathcal}{OMS}{zplm}{m}{n}
+
+% Math Theorem
+
+% Math Shortcut
+\DeclareMathOperator{\sign}{sgn}
+\DeclareMathOperator{\samax}{softargmax}
+\DeclareMathOperator{\smax}{softmax}
+\DeclareMathOperator{\smin}{softmin}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator*{\argmax}{\arg\max}
+\DeclareMathOperator*{\argmin}{\arg\min}
+\DeclareMathOperator{\sech}{sech}
+\newcommand{\matr}[1]{{#1}}     % ISO complying version
+\newcommand{\vect}[1]{{#1}}     % ISO complying version
+
+% Number sets
+\newcommand{\N}{\mathbb{N}} % Natural Numbers
+\newcommand{\Z}{\mathbb{Z}} % Integers
+\newcommand{\Q}{\mathbb{Q}} % Quotient
+\newcommand{\R}{\mathbb{R}}	% Real Numbers
+\newcommand{\E}{\mathbb{E}}	% Real Numbers
+% \newcommand{\C}{\mathbb{C}} % Complex Numbers
+
+% ML
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cN}{\mathcal{N}}
+
+\newcommand{\vx}{{x}}
+\newcommand{\vy}{{y}}
+\newcommand{\vb}{{b}}
+\newcommand{\vz}{{z}}
+\newcommand{\mW}{{W}}
+
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+%Algorithm
+\usepackage[ruled,vlined]{algorithm2e}
+% Other
+\usepackage[shortlabels]{enumitem}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage[]{tcolorbox}
+\usepackage{listings}
+\usepackage{graphicx} 
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\title{Homework 2}
+\author{Guilherme Albertini}
+\date\today
+%This information doesn't actually show up on your document unless you use the maketitle command below
+
+\begin{document}
+\maketitle %This command prints the title based on information entered above
+
+%Section and subsection automatically number unless you put the asterisk next to them.
+\section*{Theory}
+% References: 
+% https://distill.pub/2019/computing-receptive-fields/
+% https://arxiv.org/abs/1603.07285
+\subsection*{Problem 1.1: Convolutional Neural Networks}
+\begin{enumerate}
+  \item Given an input image of dimension $17 \times 11$, what will be output
+        dimension after applying a convolution with $3 \times 5$ kernel, stride
+        of 2,
+        and no padding?
+        \begin{tcolorbox}
+          \begin{flalign*}
+            8 \times 4
+          \end{flalign*}
+        \end{tcolorbox}
+
+  \item Given an input of dimension $C \times H \times W$ what will be the
+        dimension of the output of a convolutional layer with kernel of size $HK
+          \times
+          WK$, padding P, stride S, dilation D, and F filters. Assume that H
+        $\geq$ HK, W
+        $\geq$ HK.
+        \begin{tcolorbox}
+          Define Padding along height on top	  $P_{H1}$\\
+
+          Define Padding along height on bottom $P_{H2}$\\
+
+          Define Padding along width on left	  $P_{W1}$\\
+
+          Define Padding along width on right	$P _{W2}$\\
+
+          Define Kernel width		 $K_{H}~(is~HK)$\\
+
+          Define Kernel height		  $K_{W}~(is~WK)$\\
+
+          Define Stride horizontal		  $S_{W}$\\
+
+          Define Stride vertical		  $S_{H}$\\
+
+          Define Batch Count			  $B$\\
+
+          Note that for Dilated kernel: $$K' = K+(K - 1)(D - 1) = K+KD-K-D+1=  D(K-1)+1$$.
+
+          \begin{flalign*}
+                   & \text{Effect of adding padding and applying kernel to
+              dimensions:}
+            \\
+            H_P    & = P_{H1} + P_{H2} +
+            H                                                              \\
+            W_P    & = P_{W1} + P_{W2} +
+            W                                                              \\
+            H_{PK_{H}} & = H_1 - [D_H(K_H - 1)+1]                              \\
+                   & =P_{H1} + P_{H2} + H - [D_H(K_H - 1)+1]
+            \\
+            W_{PK_{W}} & = W_1 - [D_W(K_W - 1)+1]                              \\
+                   & =P_{W1} + P_{W2} + W - [D_W(K_W - 1)+1]
+            \\
+          \end{flalign*}
+        \end{tcolorbox}
+        \begin{tcolorbox}
+          \begin{flalign*}
+            & \text{Considering stride to
+            dimensions:}                                              \\
+            H_{P_{H}K_{H}S_{H}} & = \floor*{\frac{H_P -
+            [D_H(K_H - 1)+1]+S_H}{S_H}}
+            \\
+            & =\floor*{\frac{P_{H1} + P_{H2} + H - [D_H(K_H -
+            1)+1]}{S_H}}+1                                            \\
+            W_{P_{W}K_{W}S_{W}} & = \floor*{\frac{W_P -
+            [D_W(K_W - 1)+1]+S_W}{S_W}}
+            \\
+                    & =\floor*{\frac{P_{W1} + P_{W2} + W - [D_W(K_W -
+            1)+1]}{S_W}}+1
+          \end{flalign*}
+        \end{tcolorbox}
+        \begin{tcolorbox}
+          We can make simplifcations that I think are implied here:
+          \begin{flalign*}
+            S & = S_W = S_H                         \\
+            D & = D_W = D_H                         \\
+            B & = 1                                 \\
+            P & = P_{W1} + P_{W2} = P_{H1} + P_{H2} \\
+          \end{flalign*}
+          \begin{flalign*}
+                     & \text{Thus the output dimension is: }             \\
+            F \times & \left( \floor*{\frac{2P + H - [D(HK - 1)+1]}{S}}+1
+            \right)                                                      \\
+            \times   & \left(\floor*{\frac{2P + W - [D(WK - 1)+1]}{S}}+1
+            \right)
+          \end{flalign*}
+        \end{tcolorbox}
+  \item Let's consider an input $x[n] \in \mathbb{R}^7$, with $1 \leq n \leq
+          11$, e.g. it is a length 11 sequence with 7 channels. We consider the
+        convolutional layer $f_W$ with one filter, with kernel size 3, stride of 2, no
+        dilation, and no padding. The only
+        parameters of the convolutional layer is the weight $W, W \in \mathbb{R}^{1
+            \times 7 \times 3}$ and there is no bias and no non-linearity.
+        \begin{enumerate}
+          \item What is the dimension of the output $f_W(x)$? Provide an
+                expression for the value of elements of the convolutional layer output
+                $f_W(x)$.
+                Example answer format here and in the following sub-problems: $f_W(x)
+                  \in \mathbb{R}^{42 \times 42 \times 42}, f_W(x)[i, j,k] = 42.$
+                \begin{tcolorbox}
+                  The general recurrence equation: $r_{l-1} = s_{l}r_{l}-(s_{l}-k_{l}) = s_l(r_l-1)+k_l$
+                  \begin{flalign*}
+                    f_W(x)    & \in \mathbb{R}^3                                     \\
+                    f_W(x)[r] & = \sum_{c=1}^{7}\sum_{k=1}^{3} x[k+2(r-1), c]W_{1,c,k}
+                  \end{flalign*}
+                  For $r = \{i : i \in \mathbb{N}, i \in [1, \dim(f_W)]\}$
+                \end{tcolorbox}\
+          \item What is the dimension of $\frac{\partial f_W(x)}{\partial W}$?
+                What are its values?
+                \begin{tcolorbox}
+                  Note: There are a few ways one could interpret the transpose of the tensor (W) depending on which dimensions are to be transposed in numerator format. Using a chosen transpose with numerator layout format.
+                  \begin{flalign*}
+                    \frac{\partial f_W(x)}{\partial W}          & \in \mathbb{R}^{3 \times (3 \times 7 \times 1)
+                    }                                                       \\
+                    \frac{\partial f_W(x)}{\partial W}[r,c,k] & =x[k+2(r-1),c]
+                  \end{flalign*}
+                \end{tcolorbox}
+          \item What is the dimension of $\frac{\partial f_W(x)}{\partial x}$?
+                What are its values?
+                \begin{tcolorbox}
+                  See note above.
+                  \begin{flalign*}
+                    \frac{\partial f_W(x)}{\partial x}        & \in \mathbb{R}^{3 \times (11
+                    \times 7)}                                                                                    \\
+                    \frac{\partial f_W(x)}{\partial x}[r,c,k] & = \begin{cases}
+                                                                    W_{1,c,k-2(r-1)} & \text{if } k-2(r-1) \in [1,3] \\
+                                                                    0                & \text{otherwise }
+                                                                  \end{cases}
+                  \end{flalign*}
+                \end{tcolorbox}
+          \item Now, suppose you are given the gradient of the loss $\ell$ with
+                respect to the output of the convolutional layer $f_W(x)$, i.e. $\frac{\partial
+                    \ell}{\partial f_W(x)}$. What is the dimension of $\frac{\partial
+                    \ell}{\partial W}$? Provide its expression. Explain the similarities and
+                differences of this and expression in (a).
+                \begin{tcolorbox}
+                  \begin{flalign*}
+                    \frac{\partial \ell}{\partial W} &= \frac{\partial \ell}{\partial f_W}\frac{\partial f_W}{\partial W}\\
+                    \frac{\partial \ell}{\partial W}                       & \in \mathbb{R}^{3 \times 7
+                    \times 1}                                                                           \\
+                    \left( \frac{\partial \ell }{\partial W}\right)[1,c,k] & = \sum_{r
+                      = 1}^{3}\left(\frac{\partial \ell}{\partial f_W(x)}\right)[r]x[k+2(r-1),c]
+                  \end{flalign*}
+                  Both the backward and forward pass of the convolutional layer apply a convolution but the stride
+                  dilates in the backward pass; we can consider dilation factor $D$ as the gradient of the loss with respect to the output of the convolutional layer.
+                \end{tcolorbox}
+        \end{enumerate}
+\end{enumerate}
+
+%If you want centered math on its own line, you can use a slash and square
+%bracket.\\
+%\[
+%  \left \{
+%  \sum\limits_{k=1}^\infty l(I_k):A\subseteq \bigcup_{k=1}^\infty \{I_k\}
+%  \right \}
+%\]
+%The left and right commands make the brackets get as big as we need them to
+%be.
+
+\clearpage %Gives us a page break before the next section. Optional.
+\subsection*{Problem 1.2: Recurrent Neural Networks}
+% References:
+% https://d2l.ai/chapter_recurrent-neural-networks/bptt.html
+% https://mmuratarat.github.io/2019-02-07/bptt-of-rnn
+% https://jramapuram.github.io/ramblings/rnn-backrpop/
+% https://talwarabhimanyu.github.io/blog/2018/07/31/rnn-backprop
+% https://towardsdatascience.com/backpropagation-in-rnn-explained-bdf853b4e1c2
+In this section consider simple recurrent neural network defined by:
+\begin{flalign}
+  c[t] &=\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+  h[t]&=c[t]\odot h[t-1] + (1-c[t]) \odot W_{x}x[t]
+\end{flalign} 
+here $\sigma$ is element-wise sigmoid, $x[t]\in \mathbb{R}^n, h[t]
+  \in \mathbb{R}^m, W_c \in \mathbb{R}^{m \times n}, W_h \in \mathbb{R}^{m \times
+    m}, W_x \in \mathbb{R}^{m \times n}$ and $\odot$ is a Hadamard product, $h[0]
+  \coloneqq 0.$
+\begin{enumerate}
+  \item Draw a diagram for this RNN.
+  \begin{tcolorbox}
+  \includegraphics[width=10.5cm]{"diagram.png"}
+  \end{tcolorbox}
+  \item What is the dimension of $c[t]$?
+  \begin{tcolorbox}
+    \begin{flalign*}
+      c[t] \in \mathbb{R}^m
+    \end{flalign*}
+  \end{tcolorbox}
+  \item Suppose that we run the RNN to get a sequence of $h[t]$ for t from 1 to
+        K. Assuming we know the derivative $\frac{\partial \ell}{\partial h[t]}$,
+        provide the dimension of an expression for values of $\frac{\partial
+            \ell}{\partial W_x}$ in terms of $\ell, h, W_x$. What are the similarities between
+        backward and forward pass of this RNN? NOTE: I COMBINED BOTH OF THE RELATED QUESTIONS INTO ONE.
+        \begin{tcolorbox}
+          \begin{flalign*}
+            \frac{\partial \ell}{\partial W_x} &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\frac{\partial h[t]}{\partial W_x}\\
+          \end{flalign*}
+          Note that the first term of $\frac{\partial h[t]}{\partial W_x}$ has dependence on the prior term recursively so need chain rule: $\frac{\partial h[t]}{\partial h[t-1]}\frac{h[t-1]}{W_x}$\\
+          \begin{flalign*}
+            &= \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}\left( \frac{\partial([1-c[t]]\odot W_{x}x[t])}{\partial W_x} +\sum_{i=1}^{t-1}\left( \prod_{j=i+1}^{t} \frac{\partial h[i]}{\partial h[i-1]}\frac{\partial h[i-1]}{\partial W_x} \right)  \right)\\
+        \end{flalign*}
+        Note:
+        \begin{flalign*}
+          \frac{\partial([1-c[t]]\odot W_{x}x[t])}{W_x} &= \frac{{diag(1-c[t])\partial(W_{x}x[t])+diag(W_{x}x[t])\partial(1-c[t])}}{\partial W_x}\\
+          & = diag(1-c[t]) \frac{\partial W_{x}x[t]}{\partial W_x}\\
+          & = (1-c[t]) \odot X\\
+        \end{flalign*}
+        Thus,
+        \begin{flalign*}
+          \frac{\partial \ell}{\partial W_x} = \sum_{t=1}^{K} \frac{\partial \ell}{\partial h[t]}&\left( (1-c[t]) \odot X +\sum_{i=1}^{t-1}\left( \prod_{j=i+1}^{t} \frac{\partial h[i]}{\partial h[i-1]} \right) [(1-c[t]) \odot X] \right)\\
+          X_j &= [0 \times (j - 1), x[t], 0, \ldots], X \in \mathbb{R}^{m \times (m \times n)}
+        \end{flalign*}
+        Both the forward and backward passes use recurrences.
+      \end{tcolorbox}
+      \begin{tcolorbox}
+        Aside: Diagonal matrices can eliminate Hadamard products.
+        \begin{flalign*}
+          h[t] &=  c[t]\odot h[t-1] + (1-c[t]) \odot W_{x}x[t]\\
+          dh[t] &= h[t-1] \odot dc[t] + c[t] \odot d(h[t-1])\\
+          &+ (1-c[t]) \odot d(W_{x}x[t]) + W_{x}x[t] \odot d(1-c[t])\\
+          &= diag(h[t-1])dc[t] + diag(c[t])dh[t-1] - diag(W_{x}x[t])dc[t]\\
+          &+diag(1-c[t])(dW_{x}x[t] + W_{x}[t]dx[t])
+        \end{flalign*}
+        Note $\frac{\partial W_x}{\partial h[t-1]} = \frac{\partial x[t]}{\partial h[t-1]} = 0$:
+        \begin{flalign*}
+          \frac{\partial h[t]}{\partial h[t-1]} &= diag(c[t])+diag(h[t-1])\frac{\partial c[t]}{\partial h[t-1]}-\\
+          &diag(W_{x}x[t])\frac{\partial c}{\partial h[t-1]}
+        \end{flalign*}
+        And note, as $\sigma'(x) = \sigma(x)(1-\sigma(x))$:
+        \begin{flalign*}
+          c[t] &=\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+          dc[t] &= \sigma(W_{c}x[t]+W_{h}h[t-1]) \odot (1-\sigma(W_{c}x[t]+W_{h}h[t-1]))\\
+          & \odot d[W_{c}x[t]+W_{h}h[t-1]]\\
+          &= diag[\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+          &\odot (1-\sigma(W_{c}x[t]+W_{h}h[t-1]))]d[W_{c}x[t]+W_{h}h[t-1]]\\
+          &\implies \frac{\partial c[t]}{\partial h[t-1]} = diag[\sigma(W_{c}x[t]+W_{h}h[t-1])\\
+          &\odot(1-\sigma(W_{c}x[t]+W_{h}h[t-1])]W_h
+        \end{flalign*}
+      \end{tcolorbox}
+        \item  Why can this network be subject to vanishing or exploding gradients?
+        \begin{tcolorbox}
+          The vector $h[t]$ is not being multiplied by matrices throughout timesteps so will not have exploding gradients. It can vanishing gradients as the element-wise multiplication of values of $h[t]$ and $c[t]$ are between 0 and 1.
+        \end{tcolorbox}
+      \end{enumerate}
+      
+      \subsection*{Problem 1.3: AttentionRNN(2)}
+      
+      We define AttentionRNN(2) as:
+      \begin{flalign}
+        q_0[t],q_1[t],q_2[t] & = Q_0x[t],Q_1h[t-1],Q_2h[t-2]               \\
+        k_0[t],k_1[t],k_2[t] & = K_0x[t],K_1h[t-1],K_2h[t-2]               \\
+        v_0[t],v_1[t],v_2[t] & = V_0x[t],V_1h[t-1],V_2h[t-2]               \\
+        w_i[t]               & = q_i[t]^{T}k_i[t]                          \\
+        a[t]                 & = \text{softargmax}([w_0[t],w_1[t],w_2[t]]) \\
+        h[t]                 & = \sum_{i=0}^{2}a_i[t]v_i[t]
+      \end{flalign}
+where $x[t],h[t] \in \mathbb{R}^n$ and $Q_i, K_i, V_i \in \mathbb{R}^{n
+    \times n}.$ We define $h[t] = 0$ for $t < 1$. You may safely ignore base cases
+in the following.
+\begin{enumerate}
+  \item What is the dimension of $a[t]$?
+  \begin{tcolorbox}
+    \begin{flalign*}
+      a[t] \in \mathbb{R}^{n}
+    \end{flalign*}
+  \end{tcolorbox}
+  \item Extend this to AttentionRNN(k), a network that uses the last k state
+        vectors h. Write out a system of equations that defines it.
+        \begin{tcolorbox}
+          Now define AttentionRNN($k$) as:
+          \begin{flalign*}
+        q_0[t],q_1[t], \ldots , q_k[t] & = Q_0x[t],Q_1h[t-1], \ldots , Q_{k}h[t-k]                \\
+        k_0[t],k_1[t], \ldots , k_k[t] & = K_0x[t],K_1h[t-1], \ldots , K_{k}h[t-k]               \\
+        v_0[t],v_1[t], \ldots , v_k[t] & = V_0x[t],V_1h[t-1], \ldots , V_{k}h[t-k]               \\
+        w_i[t]               & = q_i[t]^{T}k_i[t]                          \\
+        a[t]                 & = \text{softargmax}([w_0[t],w_1[t], \ldots, w_k[t]]) \\
+        h[t]                 & = \sum_{i=0}^{k}a_i[t]v_i[t]
+          \end{flalign*}
+        \end{tcolorbox}
+  \item Modify the above network to produce AttentionRNN($\infty$), a network
+        that uses every past state vector. Write out a system of equations that defines
+        it. We can do this by tying together some set of parameters, e.g. weight sharing.
+        \begin{tcolorbox}
+          Now define AttentionRNN($\infty$) as the following for $i \in [1, T]$:
+          \begin{flalign*}
+            q_0[t], \ldots , q_i[t] & = Q_0x[t],Q_{i}h[t-i], \ldots, Q_{i}h[1]                   \\
+            k_0[t], \ldots , k_i[t] & = K_0x[t],K_{i}h[t-i] \ldots, K_{i}h[1]                 \\
+            v_0[t], \ldots , v_i[t] & = V_0x[t],V_{i}h[t-i] \ldots, V_{i}h[1]               \\
+            w_i[t]               & = q_i[t]^{T}k_{i}[t]                          \\
+            a[t]                 & = \text{softargmax}([w_0[t], \ldots, w_{t-1}[t]]) \\
+            h[t]                 & = \sum_{i=0}^{t-1}a_i[t]v_i[t]
+          \end{flalign*}
+        \end{tcolorbox}
+  \item Suppose the loss $\ell$ is computed, and we know the derivative
+        $\frac{\partial \ell}{\partial h[i]}$ for all $i \geq t$. Write down expression
+        for $\frac{\partial h[t]}{\partial h[t-1]}$ for AttentionRNN(2).
+        \begin{tcolorbox}
+          $\frac{\partial h[t]}{\partial h[t-1]}$ with $h[t] = \sum_{i=1}^{2}a_i[t]v_i[t]$ has $h[t] = a_0[t]v_0[t]+a_1[t]v_1[t]+a_2[t]v_2[t]$. Accordingly, only $q_1, v_1, k_1$ depend on $h[t-1]$.
+          \begin{flalign*}
+            a_0[t] &= \frac{\exp(q_0[t]^{T}k_0[t])}{\sum_{i=0}^{2}\exp(q_i[t]^{T}k_i[t])}\\
+            a_1[t] &= \frac{\exp(q_1[t]^{T}k_1[t])}{\sum_{i=0}^{2}\exp(q_i[t]^{T}k_i[t])}\\
+            a_2[t] &= \frac{\exp(q_2[t]^{T}k_2[t])}{\sum_{i=0}^{2}\exp(q_i[t]^{T}k_i[t])}\\
+            v_0[t] &= V_0x[t]\\
+            v_1[t] &= V_1h[t-1]\\
+            v_2[t] &= V_2h[t-2]\\
+            \frac{\partial h[t]}{\partial h[t-1]} &= \left( \frac{\partial a_0[t]v_0[t]}{\partial h[t-1]}, \frac{\partial a_1[t]v_1[t]}{\partial h[t-1]}, \frac{\partial a_2[t]v_2[t]}{\partial h[t-1]} \right)\\
+            \frac{\partial a_0[t]v_0[t]}{\partial h[t-1]} &= v_0[t]\frac{-\partial Z}{Z^2} = \frac{-v_0[t]}{Z^2}\partial(\exp(q_1[t]^{T}k_1{t}))\\
+            &= \frac{-v_0[t]}{Z^2}(k_1Q_q+{q_{1}}^{T}k_1[t])\\
+            &= -v_0[t](k_1Q_q+q_1^TK_1)\frac{\exp(q_1[t]^Tk_1[t])}{\sum_{i=1}^{2}\exp(q_i[t]^Tk_i[t])^2}\\
+            \frac{\partial a_2[t]v_2[t]}{\partial h[t-1]} &= -v_2[t](k_1Q_q+q_1^TK_1)\frac{\exp(q_1[t]^Tk_1[t])}{\sum_{i=1}^{2}\exp(q_i[t]^Tk_i[t])^2}\\
+            \frac{\partial a_1[t]v_1[t]}{\partial h[t-1]} &= v_1[t]\frac{\partial a_1[t]}{\partial h[t-1]} +a_1[t]\frac{\partial v_1[t]}{\partial h[t-1]}\\
+            &= \frac{\partial \exp(q_1[t]^Tk_1[t])}Z{} - \exp(q_1[t]^Tk_1[t])\frac{\partial Z}{Z^2}\\
+            &=\frac{(k_1Q_1+q_1^TK_q)\exp(q_1[t]^Tk_1[t]) }{Z} \\
+            &-\exp(q_1[t]^Tk_1[t])(k_1Q_q+q_1^TK_1)\frac{\exp(q_1[t]^Tk_1[t])}{\sum_i=0}^{2} \exp(q_i[t]^Tk_i[t])
+          \end{flalign*}
+          And so,\
+          \begin{flalign*}
+            \frac{\partial h[t]}{\partial h[t-1]} = \frac{\partial a_0[t]v_0[t]}{\partial h[t-1]} + \frac{\partial a_2[t]v_2[t]}{\partial h[t-1]} +v_1[t]\frac{\partial a_1[t]}{\partial h[t-1]} +a_1[t]\frac{\partial v_1[t]}{\partial h[t-1]}
+          \end{flalign*}
+        \end{tcolorbox}
+  \item Suppose we know $\frac{\partial h[t]}{\partial h[T]}$ and
+        $\frac{\partial \ell}{\partial h[t]} \forall t>T$. Write down expression for
+        $\frac{\partial \ell}{\partial h[T]}$ for AttentionRNN(k).
+        \begin{tcolorbox}
+          \begin{flalign*}
+            \frac{\partial \ell}{\partial h[T]} = \sum_{i=1}^k\frac{\partial \ell}{\partial h[T+i]}\frac{\partial h[T+i]}{\partial h[T]}
+          \end{flalign*}
+        \end{tcolorbox}
+\end{enumerate}
+
+\subsection*{Problem 1.4: Debugging Loss Curves}
+%
+%\includegraphics[width=14cm]{"loss.png"}
+\begin{enumerate}
+  \item What causes the spikes on the left?
+    \begin{tcolorbox}
+      Underparametrization of the model at that point in training. 
+    \end{tcolorbox}
+  \item How can they be higher than the initial value of the loss?
+    \begin{tcolorbox}
+       At that point in training, the selected parametrization produced a model that was less performant than this initialization (i.e. was worse than randomly selecting one of the classes).
+    \end{tcolorbox}
+  \item What are some ways to fix them?
+    \begin{tcolorbox}
+      We can select a more conservative learning rate or clip the gradient.
+    \end{tcolorbox}
+  \item Explain why the loss and accuracy are at these set values before
+        training starts. You may need to check the task definition in the notebook.
+        \begin{tcolorbox}
+          Models are initialized with near-zero random weights that essentially collapse output to near zero, thus energy of model $F(x,Y) \approx 0$. When we take a look at:
+      \begin{flalign*}
+        L[F(x,Y),y] &= F(x,y)+\frac{1}{\beta} \log \sum_{y' \in Y}\exp(-\beta F(x,y'))\\
+        &= F(x,y) - softmin_{\beta}[F(x,Y)]\\
+        -\nabla_{F(x,y)}L[F(x,Y),y] &= \tilde{y}-y
+      \end{flalign*}
+      Where $\tilde{y}$ is the softargmin at that point; the average of all classes produces the uniform distribution and $y$ is the one-hot encoding for the correct class that will ``push'' its energy down by magnitude 1 while pulling up all other energies for each update step. 
+          When we shoot the untrained model's zero vector into softargmin we get each entry as $1/K = 1/4 = 0.25$ and compute cross entropy loss of $-\log_{e}(1/K) = \log(4) \approx 1.39$ which is what we see at the initial (untrained) loss region. We also see the 0.25 random choice for accuracy at this region above.
+        \end{tcolorbox}
+\end{enumerate}
+
+\subsection*{Debugging Loss Curves}
+
+\begin{tcolorbox}
+ See notebook for corrections. Note how gradient clipping and a more conservative learning rate of 0.005 was applied to smoothen out the kinks we saw before.\\
+\end{tcolorbox}
+
+\end{document}
