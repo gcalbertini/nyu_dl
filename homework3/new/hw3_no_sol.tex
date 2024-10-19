@@ -1,0 +1,559 @@
+\documentclass{article}
+% Setting
+\usepackage{fouriernc}
+\usepackage[T1]{fontenc}
+
+% Formatting
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+
+% Text
+\usepackage{tcolorbox}
+
+% Math
+\usepackage{mathtools, amssymb, bm, amsthm}
+\usepackage{bbm}
+% original mathcal
+\DeclareMathAlphabet{\mathcal}{OMS}{zplm}{m}{n}
+
+% Math Theorem
+
+% Math Shortcut
+\DeclareMathOperator{\sign}{sgn}
+\DeclareMathOperator{\samax}{softargmax}
+\DeclareMathOperator{\smax}{softmax}
+\DeclareMathOperator{\smin}{softmin}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator*{\argmax}{\arg\max}
+\DeclareMathOperator*{\argmin}{\arg\min}
+\newcommand{\matr}[1]{{#1}}     % ISO complying version
+\newcommand{\vect}[1]{{#1}}     % ISO complying version
+
+% Number sets
+\newcommand{\N}{\mathbb{N}} % Natural Numbers
+\newcommand{\Z}{\mathbb{Z}} % Integers
+\newcommand{\Q}{\mathbb{Q}} % Quotient
+\newcommand{\R}{\mathbb{R}}	% Real Numbers
+\newcommand{\E}{\mathbb{E}}	% Real Numbers
+% \newcommand{\C}{\mathbb{C}} % Complex Numbers
+
+% ML
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cN}{\mathcal{N}}
+
+\newcommand{\vx}{{x}}
+\newcommand{\vy}{{y}}
+\newcommand{\vb}{{b}}
+\newcommand{\vz}{{z}}
+\newcommand{\mW}{{W}}
+
+\newcommand{\pdv}[2]{\frac{\partial #1}{\partial #2}}
+
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+
+% Scientific notation
+
+%Drawing
+
+
+%Algorithm
+\usepackage[ruled,vlined]{algorithm2e}
+
+% Other
+\usepackage[shortlabels]{enumitem}
+\usepackage{cleveref}
+
+\usepackage{xcolor}
+
+\title{Homework 3: Energy-Based Models}
+\author{CSCI-GA 2572 Deep Learning}
+\date{Fall 2024}
+
+\begin{document}
+
+\maketitle
+
+The goal of homework 3 is to test your understanding of Energy-Based Models, and to show you one application in structured prediction.
+
+In the theoretical part, we'll mostly test your intuition. You'll need to write brief answers to questions about how EBMs work. In part 2, we will implement a simple optical character recognition system. 
+
+In part 1, you should submit all your answers in a pdf file. As before, we recommend using \LaTeX. 
+
+For part 2, you will implement some neural networks by adding your code to the provided ipynb file.
+
+The due date of homework 3 is 11:55pm \texttt{10/20}.
+Submit the following files in a zip file \texttt{your\_net\_id.zip} through NYU classes:
+\begin{itemize}
+\item \texttt{hw3\_theory.pdf}
+\item \texttt{hw3\_impl.ipynb}
+\end{itemize}
+
+The following behaviors will result in penalty of your final score:
+\begin{enumerate}
+\item 10\% penalty for submitting your file without using the correct naming format (including naming the zip file, PDF file or python file wrong, adding extra files in the zip folder, like the testing scripts in your zip file). 
+\item 10\% penalty for every extra day of lateness. Up to 4 days max (after that we won't accept submission).
+\item 20\% penalty for code submission that cannot be executed following the steps we mentioned.
+\end{enumerate}
+
+\section{Theory (50pt)}
+
+\subsection{Energy Based Models Intuition (15pts) }
+This question tests your intuitive understanding of Energy-based models and their properties. 
+\begin{enumerate}[(a)]
+
+\item (1pts) How do energy-based models allow for modeling situations where the mapping from input $x_i$ to output $y_i$ is not 1 to 1, but 1 to many, or even 1 to an infinite continuum of $y$?
+\begin{tcolorbox}
+    We are mapping pairs $(x,y)$ to a scalar energy value
+	and find that the most likely values of $y$ have a low
+	$F(x,y)$. We then observe that, for each $x$, we can have several different
+	values $y$ that have this low energy.
+
+    Note a good definition from DeepAI: ``Energy-Based
+		      Models (EBMs) discover data dependencies by applying a
+		      measure of
+		      compatibility (scalar energy) to each configuration of
+		      the variables. For a model to make a prediction or
+		      decision (inference)
+		      it needs to set the value of observed variables to 1
+		      and finding values of the remaining variables that
+		      minimize that “energy”
+		      level.
+		      In the same way, machine learning consists of
+		      discovering an energy function that assigns low energies
+		      to the correct values
+		      of the remaining variables,
+		      and higher energies to the incorrect values. A
+		      so-called “loss functional,” that is minimized during
+		      training, is used to
+		      measure the quality of the energy functions. Within this
+		      framework, there are
+		      many energy functions and loss functionals allows
+		      available to design different
+		      probabilistic and non-probabilistic statistical
+		      models.''\\
+		      Words from Alf: ``We would like the energy function to
+		      be smooth and differentiable so that we can use it to
+		      perform the
+		      gradient-based method for inference. In order to perform
+		      inference, we search
+		      this function using gradient descent to find compatible
+		      y's. There are many
+		      alternate methods to gradient methods to obtain the
+		      minimum.''
+\end{tcolorbox}
+
+\item (1pts) How do energy-based models differ from models that output probabilities?
+\begin{tcolorbox}
+    As is the key to their flexibility, we need not concern
+		      ourselves
+		      with normalization as EBMs output an unnormalized scalar
+		      (score) of $F(x,y)$ as
+		      opposed to conditional probabilities (i.e
+		      $\mathbb{P}(y|x)$ would later require
+		      an estimate of normalization).
+\end{tcolorbox}
+
+\item  (2pts) How can you use energy function $F_W(x, y)$ to calculate a probability $p(y \mid x)$?
+\begin{tcolorbox}
+    We can view energies as unnormalised negative log
+		      probabilities, and use Gibbs-Boltzmann distribution to
+		      convert from energy to
+		      probability (with normalization and calibrated $\beta$):
+		      \begin{flalign*}
+			      \mathbb{P}(y|x)=\frac{\exp(-\beta
+				      F(x,y))}{\int_{y'}\exp(-\beta F(x,y'))}
+		      \end{flalign*}
+		      Note: $\beta$ is postive constant and larger values
+		      produce models with more variance whereas smoother ones
+		      are produced with
+		      smaller values.
+\end{tcolorbox}
+
+
+\item (1pt) Is there a way to control the smoothness of the probability distribution $p(y|x)$ estimated from the energy function $F_W(x,y)$? How do we reduce the variance of $p(y|x)$?
+\begin{tcolorbox}
+    The temperature affects the smoothness of the distribution: higher temperatures make the distribution smoother by spreading the probabilities more evenly across the possible outcomes $y$.
+    Lower temperatures make the distribution sharper by increasing the contrast between higher and lower probability outcomes. Accordingly, variance can be reduced by increasing the temperature, which makes the distribution smoother and reduces overfitting to specific outcomes.
+\end{tcolorbox}
+
+\item (2pts) What are the roles of the loss function and energy function? 
+
+\begin{tcolorbox}
+    The energy function is a measure of incompatibility
+		      between variables (for us, usually the input $x$ and
+		      output $y$) whereas the
+		      loss function is used to mold the energy function (we
+		      minimize loss to end up
+		      with a well-behaved energy function). Note that the cost
+		      is how far prediction
+		      $\hat{y}$ is from target $y$. As Yann mentions: A loss
+		      functional, minimized
+		      during learning, is used to measure the quality of the
+		      available energy
+		      functions. A distinction should be made between the
+		      energy function, which is
+		      minimized by the inference process, and the loss
+		      functional, which is minimized
+		      by the learning process.
+\end{tcolorbox}
+
+\item (2pts) What problems can be caused by using only positive examples for energy (pushing down energy of correct inputs only)? How can it be avoided?
+\begin{tcolorbox}
+    We may get a case of having energy be 0 everywhere,
+    which is a valid minimization of the (flat) energy
+    surface under this constraint. As this flat model can
+    reach every location of
+    the space, the distance between any two points (such as
+    the length of the
+    latent vector spanning the embedded model manifold's
+    reconstructed
+    $\tilde{y}=Wz$ to observed target $y$) is 0, hence at
+    the minimum energy by default. To avoid this state of
+    collapse
+    case, we can augment $y
+        = [1, y]^{T}$ to give an additional degree of
+    freedom to dictionary $W=[1, W]^{T}$, so
+    that we can now intersect any point in the 2D space but
+    only at those points
+    located at the specific height (here, 1) that gives the
+    minimum energy near 0.
+\end{tcolorbox}
+
+
+\item 
+(2pts) Briefly explain the three methods that can be used to shape the energy function.
+\begin{tcolorbox}
+    Regularization Methods: if the latent variable z is too
+		      expressive power in producing the final prediction
+		      $\tilde{y}$ then every true
+		      output $y$ will be a perfect reconstruction from input
+		      $x$ at the optimized
+		      latent $\check{z}$. We can then limit the volume of space
+		      of $z$ (say, with L1 loss to promote sparsity) and therby
+		      reduce the regions of
+		      $y$ with low energy, preventing the case of getting
+		      energy 0 everywhere.\\\\
+		      Contrastive Methods: Push down the energy of training
+		      data points, $F(X_i,Y_i)$, while pushing up energy on
+		      everywhere else,
+		      $F(X_i,Y')$.\\ \\
+		      Architectural Methods: The manifold is of lower
+		      dimension than the ambient space so the data cannot be
+		      reconstructred
+		      perfectly. Autoencoders can reduce the dimensionality of
+		      the input in the
+		      hidden layer (under-complete) and thus cannot reconstruct
+		      data perfectly,
+		      preventing collapse. If the hidden space is
+		      over-complete, we can use encoding
+		      with higher dimensionality than the input to make
+		      optimization easier.
+\end{tcolorbox}
+
+
+\item (2pts) Provide an example of a loss function that uses negative examples. The format should be as follows $\ell_\text{example}(x, y, W) = F_W(x, y)$.
+
+\begin{tcolorbox}
+    \begin{flalign*}
+        \ell_{NLL}(x,y,W) & = -\log \left(
+        \frac{\exp(-\beta F(x,y))}{\int_{y'} \exp(-\beta
+        F(x,y'))}\right)                   \\
+    \end{flalign*}
+\end{tcolorbox}
+
+\item (2pts) Say we have an energy function $F(x, y)$ with images $x$, classification for this image $y$.
+	Write down the mathematical expression for doing inference given an input $x$.
+	Now say we have a latent variable $z$, and our energy is $G(x, y, z)$.
+	What is the expression for doing inference then?
+
+    \begin{tcolorbox}
+        \begin{flalign*}
+            \check{y}            & = \arg \min_{y} {F(x,y)}
+            \\
+            \check{z}, \check{y} & = \arg \min_{y,z}
+            {G(x,y,z)}
+        \end{flalign*}
+    \end{tcolorbox}
+
+
+
+\end{enumerate}
+
+
+\subsection{Negative log-likelihood loss (20 pts) }
+
+Let's consider an energy-based model we are training to do classification of input between n classes. $F_W(x, y)$ is the energy of input $x$ and class $y$. We consider n classes: $y \in \{1, \dots, n\}$.
+
+\begin{enumerate}[(i)]
+\item (2pts) For a given input $x$, write down an expression for a Gibbs distribution over labels $p(y|x)$ that this energy-based model specifies. Use $\beta$ for the constant multiplier.
+\begin{tcolorbox}
+    \begin{flalign*}
+        F_{\beta}(x,y)=-\frac{1}{\beta} \log \int_{z}
+        \exp(-\beta G(x,y,z))
+    \end{flalign*}
+\end{tcolorbox}
+
+
+\item (5pts) Let's say for a particular data sample $x$, we have the label $y$. Give the expression for the negative log likelihood loss, i.e. negative log likelihood of the correct label (show step-by-step derivation of the loss function from the expression of the previous subproblem). For easier calculations in the following subproblem, multiply the loss by $\frac{1}{\beta}$.
+\begin{tcolorbox}
+    \begin{flalign*}
+        \ell_{NLL}(x,y,W) & = -\log \left(
+        \frac{\exp(-\beta
+                F_W(x,y))}{\int_{y'} \exp(-\beta
+                F_W(x,y'))}\right)
+        \\
+                          & =\log \left(\int_{y'}
+        \exp(-\beta F_W(x,y'))\right) -\log(\exp(-\beta F_W(x,y))
+        \\
+        & = \log \left(\int_{y'} \exp(-\beta F_W(x,y'))\right) +\beta F_W(x,y))\\
+                          & \implies \frac{1}{\beta}\log
+        \left(\int_{y'}
+        \exp(-\beta F_W(x,y'))\right) +  F_W(x,y)
+    \end{flalign*}
+    Where the last step was from dividing by $\beta$.
+\end{tcolorbox}
+
+\item (8pts) Now, derive the gradient of that expression with respect to $W$ (just providing the final expression is not enough). Your final answer may contain the expression $\frac{\partial F_W(...)}{\partial W}$. Why can it be intractable to compute it, and how can we get around the intractability? 
+\begin{tcolorbox}
+    \begin{flalign*}
+        \frac{\partial \ell_NLL(x,y,W)}{\partial W} & =
+        \frac{\partial F_W(x,y)}{\partial W} +
+        \frac{1}{\beta} \frac{\partial \log
+            \int_{y'} \exp(-\beta
+            F_W(x,y'))}{\partial W}
+        \\
+                                                    & =
+        \frac{\partial F_W(x,y)}{\partial W} +
+        \frac{1}{\beta}\frac{\frac{\partial \int_{y'}
+                \exp(-\beta F_W(x,y'))}{\partial
+                W}}{\int_{y'}\exp(-\beta
+            F_W(x,y'))}
+        \\
+        = \frac{\partial F_W(x,y)}{\partial W}      & +
+        \frac{1}{\beta}\frac{1}{\int_{y'}\exp(-\beta
+            F_W(x,y'))}\int_{y'} -\beta
+        \exp(-\beta F_W(x,y')) \frac{\partial
+            F_W(x,y')}{\partial W}
+        \\
+        =\frac{\partial F_W(x,y)}{\partial W}
+                                                    &
+        -\int_{y'} \frac{\exp(-\beta
+            F_W(x,y')}{\int_{y''} \exp(-\beta F(x,
+            y''))}\frac{\partial F(x,y')}{\partial W}
+        \\
+                                                    & =
+        \frac{\partial F_W(x,y)}{\partial W} -
+        \int_{y'} \mathbb{P}_{\beta}(y'|x)\frac{\partial
+            F_W(x,y')}{\partial W}
+    \end{flalign*}
+    It may be intractable to compute the integral term over
+    all $y' \in Y$; we can get around this by perhaps by
+    applying Markov chain
+    Monte Carlo (MCMC) methods, sequential Monte Carlo (SMC)
+    methods, importance
+    sampling, or the forward-backward algorithm.
+\end{tcolorbox}
+
+
+\item (5pts) Explain why negative log-likelihood loss pushes the energy of the correct example to negative infinity, and all others to positive infinity, no matter how close the two examples are, resulting in an energy surface with really sharp edges in case of continuous $y$ (this is usually not an issue for discrete $y$ because there's no distance measure between different classes).
+\begin{tcolorbox}
+    NLL pulls all negative examples up with force
+    proportional
+    to the probability of the $y'$ in question (see Energy
+    Classification slides).
+    This is not a distance metric so proximity of two
+    examples is irrelevant. For
+    the continuous case, this force remains the same
+    regardless of proximity of
+    examples so we end up with sharp edges over the energy
+    surface.
+\end{tcolorbox}
+
+\end{enumerate}
+
+\subsection{Comparing Contrastive Loss Functions (15pts)}
+
+In this problem, we're going to compare a few contrastive loss functions. We are going to look at the behavior of the gradients, and understand what uses each loss function has. In the following subproblems, $m$ is a margin, $m \in \R$, $x$ is input, $y$ is the correct label, $\bar y$ is the incorrect label. Define the loss in the following format: $\ell_{example}(x, y, \bar y, W) = F_W(x, y)$.
+
+\begin{enumerate}[(a)]
+\item (2pts) \textbf{Simple loss function} is defined as follows:
+
+$$
+\ell_\text{simple}(x, y, \bar y, W) = \left[ F_W(x, y)\right]^+ + \left[m - F_W(x, \bar y)\right]^+
+$$
+
+Where $[z]^+ = max(0, z)$ 
+
+Assuming we know the derivative $\pdv{F_W(x, y)}{W}$ for any $x, y$, give an expression for the partial derivative of the $\ell_\text{simple}$ with respect to $W$.
+
+\begin{tcolorbox}
+    \begin{flalign*}
+        \frac{\partial [[F_W(x,y)]^{+}] + [m -
+        F_{W}(x,\bar{y})]]^{+}}{\partial W}          & =
+        \frac{\partial [F_W(x,y)]^{+}]}{\partial
+            W} + \frac{[m - F_{W}(x,\bar{y})]^{+}}{\partial
+        W}                                              \\
+        \frac{\partial [F_W(x,y)]^{+}]}{\partial W} & =
+        \begin{cases}
+            \frac{\partial F_W(x,y)}{\partial W} &
+            \text{if
+            } F_W(x,y) > 0
+            \\
+            0                                    &
+            \text{otherwise }
+        \end{cases}
+        \\
+        \frac{\partial [m -
+                F_{W}(x,\bar{y})]^{+}}{\partial W}
+                                                    & =
+        \begin{cases}
+            \frac{-\partial
+            F_W(x,\bar{y})}{\partial W} & \text{if }
+            F_W(x,\bar{y}) < m                       \\
+            0                           &
+            \text{otherwise }
+        \end{cases}
+    \end{flalign*}\\
+\end{tcolorbox}
+
+\item (2pts) \textbf{Hinge Loss} is defined as follows:
+$$
+\ell_\text{hinge}(x, y, \bar y, W) = \left[m + F_W(x,y) - F_W(x, \bar y)\right]^+
+$$
+
+Assuming we know the derivative $\pdv{F_W(x, y)}{W}$ for any $x, y$, give an expression for the partial derivative of the $\ell_\text{hinge}$ with respect to $W$.
+\begin{tcolorbox}
+
+\[
+\pdv{\ell_\text{hinge}(x, y, \bar y, W)}{W} = \pdv{F_W(x, y)}{W} - \pdv{F_W(x, \bar y)}{W}.
+\]
+
+\[
+\pdv{\ell_\text{hinge}(x, y, \bar y, W)}{W} = 
+\begin{cases}
+\pdv{F_W(x, y)}{W} - \pdv{F_W(x, \bar y)}{W}, & \text{if } m + F_W(x, y) - F_W(x, \bar y) > 0, \\
+0, & \text{otherwise}.
+\end{cases}
+\]
+\end{tcolorbox}
+
+
+\item (2pts) \textbf{Log loss} is defined as follows:
+
+$$
+\ell_\text{log}(x, y, \bar y, W) = \log \left(1 +  e^{F_W(x, y) - F_W(x, \bar y)} \right)
+$$
+
+Assuming we know the derivative $\pdv{F_W(x, y)}{W}$ for any $x, y$, give an expression for the partial derivative of the $\ell_\text{log}$ with respect to $W$.
+\begin{tcolorbox}
+    \begin{flalign*}
+        \frac{\partial
+            \log(1+\exp(F_W(x,y)-F_W(x,\bar{y})))}{\partial
+        W} = \\
+        \frac{\left(
+            \exp(F_W(x,y)-F_W(x,\bar{y}))\right)\left(\frac{\partial F_W(x,y)}{\partial W}
+            - \frac{\partial F_W(x,\bar{y})}{\partial
+                W}\right)}{1+\exp(F_W(x,y)-F_W(x,\bar{y}))}
+        \\
+        =\frac{\exp(F_W(x,y))\left(\frac{\partial
+                F_W(x,y)}{\partial W} -
+            \frac{\partial F_W(x,\bar{y})}{\partial
+                W}\right)}{\exp(F_W(x,y))+\exp(F_W(x,\bar{y}))}
+    \end{flalign*}
+\end{tcolorbox}
+
+
+\item (2pts) \textbf{Square-Square loss} is defined as follows:
+
+$$
+\ell_\text{square-square}(x, y, \bar y, W) = \left(\left[ F_W(x, y)\right]^+ \right)^2 + \left( \left[m - F_W(x, \bar y)\right]^+ \right)^2
+$$
+
+Assuming we know the derivative $\pdv{F_W(x, y)}{W}$ for any $x, y$, give an expression for the partial derivative of the $\ell_\text{square-square}$ with respect to $W$.
+\begin{tcolorbox}
+    \begin{flalign*}
+        \frac{\partial [(F_W(x,y))^{+})^2 +
+        ((m-F_W(x,\bar{y}))^{+})^2]}{\partial W} = \\
+        \frac{\partial (F_W(x,y)^{+})^2}{\partial W} +
+        \frac{\partial
+            ((m-F_W(x,\bar{y}))^{+})^2}{\partial W}
+    \end{flalign*}
+    \begin{flalign*}
+        \frac{\partial (F_W(x,y))^{+})^2}{\partial W} & =
+        \begin{cases}
+            2F_W(x,y)\frac{\partial
+            F_W(x,y)}{\partial W} & \text{if }
+            F_W(x,y) > 0                              \\
+            0                     & \text{otherwise }
+        \end{cases}                \\
+        \frac{\partial
+            ((m-F_W(x,\bar{y}))^{+})^2}{\partial W}
+                                                      & =
+        \begin{cases}
+            -2(m-F_W(x,\bar{y}))\frac{\partial
+            F_W(x,\bar{y})}{\partial W} & \text{if }
+            F_W(x,\bar{y}) < m                       \\
+            0                           &
+            \text{otherwise }
+        \end{cases}
+    \end{flalign*}
+\end{tcolorbox}
+
+\item (7pts) \textbf{Comparison.} 
+\begin{enumerate}[(i)]
+    \item (2pts) Explain how NLL loss is different from the three losses above.
+    \begin{tcolorbox}
+        NLL loss can be applied in the continuous case, in
+        which it can prove an intractable calculation. Also note that NLL loss pulls up
+        on all negative examples at a time.
+    \end{tcolorbox}
+    \item (2pts) The hinge loss $\left[ F_W(x, y) - F_W(x, \bar y) + m \right]^+$ has a margin parameter $m$, which gives 0 loss when the positive and negative examples have energy that are $m$ apart.
+    		 The log loss is sometimes called a "soft-hinge" loss. Why? What is the advantage of using a soft hinge loss?
+             \begin{tcolorbox}
+                By taking a margin of m, we notice the following:
+                \begin{flalign*}
+                   \exp(F_W(x,y)-F_W(x,\bar{y})+m) \propto  (1+\exp(F_W(x,y)-F_W(x,\bar{y})))\\
+                  \implies m \propto \log (1+\exp(F_W(x,y)-F_W(x,\bar{y}))) - (F_W(x,y)-F_W(x,\bar{y}))\\
+                  \therefore m+F_W(x,y)-F_W(x,\bar{y}) \propto  \log (1+\exp(F_W(x,y)-F_W(x,\bar{y})))
+                \end{flalign*}
+  
+                 Thus we `soften' the exponential representation by using log to arrive at log loss, noting that it
+                 is proportional to hinge loss for this given margin. The soft-hinge loss stabilizes the exponential (hinge loss) 
+                 representation and is resilient to over/underflow. We also guarantee that the 
+                 output won't be at a vastly different scale than the input using the log.
+            \end{tcolorbox}
+    \item (2pts) How are the simple loss and square-square loss different from the hinge/log loss?
+    \begin{tcolorbox}
+        Square-square loss pushes the positive examples' energy
+        towards 0 and pulls negative examples' energy away from 0 quadratically,
+        whereas simple loss does this linearly. In comparison, hinge/log loss concerns
+        itself with the difference in energy between the positive and negative
+        examples. Hinge loss' positive examples may have lower energy than those of negative by at
+        least the margin $m$ so it may not produce energy of 0. Use
+        simple loss if the model does not need to be sensitive to outliers we come
+        across and use square-square loss if it does.
+    \end{tcolorbox}
+    \item (1pt) In what situations would you use the simple loss, and in what situations would you use the square-square loss?
+\end{enumerate}
+
+
+\end{enumerate}
+
+
+\section{Implementation (50pt + 10pt extra credit)}
+
+Please add your solutions to this notebook
+\href{https://drive.google.com/file/d/1zDjkA0R8puzTkJsJqGLjqYhLfYLJtAMT/view?usp=sharing}{\texttt{hw3\_impl.ipynb}}
+.
+\textbf{Plase use your NYU account to access the notebook.} The notebook contains parts marked as \texttt{TODO}, where you should put your code or explanations. The notebook is a Google Colab notebook, you should copy it to your drive, add your solutions, and then download and submit it to NYU Classes. You're also free to run it on any other machine, as long as the version you send us can be run on Google Colab.
+
+
+\end{document}
